@@ -1,0 +1,15 @@
+$(BUILD_ROOT)/Ref/MathReceiver/MathReceiverComponentAc.cpp:\
+    $(BUILD_ROOT)/Ref/MathPorts/MathOpPortAi.xml  \
+    $(BUILD_ROOT)/Ref/MathPorts/MathResultPortAi.xml  \
+    $(BUILD_ROOT)/Svc/Sched/SchedPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Cmd/CmdPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Cmd/CmdResponsePortAi.xml  \
+    $(BUILD_ROOT)/Fw/Cmd/CmdRegPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Prm/PrmGetPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Prm/PrmSetPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Tlm/TlmPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Time/TimePortAi.xml  \
+    $(BUILD_ROOT)/Fw/Log/LogPortAi.xml  \
+    $(BUILD_ROOT)/Fw/Log/LogTextPortAi.xml  \
+    $(BUILD_ROOT)/Ref/MathTypes/MathOpSerializableAi.xml  
+

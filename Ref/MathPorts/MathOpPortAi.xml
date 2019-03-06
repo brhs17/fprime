@@ -1,0 +1,16 @@
+<interface name="MathOp" namespace="Ref">
+	<args>
+		<arg name = "val1" type="F32"></arg>
+		<arg name = "val2" type="F32"></arg>
+		<arg name = "operation" type = "ENUM">
+			<enum name = "MathOperation">
+				<item name = "MATH_ADD"/>
+				<item name = "MATH_SUB"/>
+				<item name = "MATH_MULTIPLY"/>
+				<item name = "MATH_DIVIDE"/>
+			</enum>
+		</arg>
+	</args>
+</interface>
+			
+				

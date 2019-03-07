@@ -29,6 +29,9 @@ void exitTasks(void);
 #include <Svc/FatalHandler/FatalHandlerComponentImpl.hpp>
 #include <Drv/BlockDriver/BlockDriverImpl.hpp>
 
+#include <Ref/MathSender/MathSenderComponentImpl.hpp>
+#include <Ref/MathReceiver/MathReceiverComponentImpl.hpp>
+
 extern Svc::RateGroupDriverImpl rateGroupDriverComp;
 extern Svc::ActiveRateGroupImpl rateGroup1Comp, rateGroup2Comp, rateGroup3Comp;
 extern Svc::CmdSequencerComponentImpl cmdSeq;
@@ -54,4 +57,6 @@ extern Ref::SendBuffImpl sendBuffComp;
 extern Ref::SignalGen SG1 , SG2, SG3, SG4, SG5;
 extern Ref::PingReceiverComponentImpl pingRcvr;
 
+extern Ref::MathSenderComponentImpl mathSender;
+extern Ref::MathReceiverComponentImpl mathReceiver;
 #endif

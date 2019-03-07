@@ -97,6 +97,10 @@ namespace Ref {
           const FwOpcodeType opCode, /*!< The opcode*/
           const U32 cmdSeq /*!< The command sequence number*/
       );
+	
+	void parameterUpdated(
+		U32 id
+	);
 
 	F32 m_factor1;
 	U32 m_factor1s;

@@ -92,7 +92,11 @@ REF_MODULES := \
 	Ref/MathReceiver \
 	Ref/MathPorts \
 	Ref/MathTypes \
-	Ref/CLEPorts
+	Ref/CLEAgg \
+	Ref/CLEMOps \
+	Ref/CLEPorts \
+	Ref/CLETypes 
+	
 
 	
 Ref_MODULES := \

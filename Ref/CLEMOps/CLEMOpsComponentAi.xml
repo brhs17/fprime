@@ -43,7 +43,7 @@
 			</arg>
 			</args>
 		</event>
-		<event id="101" name="Ops_Result" severity = "ACTIVITY_HIGH" format_string="Ops Result is %f">
+		<event id="101" name="Ops_Result" severity = "ACTIVITY_HI" format_string="Ops Result is %f">
 			<args>
 			<arg name="result" type="F32">
 			</arg>

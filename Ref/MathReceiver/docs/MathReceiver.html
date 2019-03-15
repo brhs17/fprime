@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MathReceiver Component Dictionary</title>
+</head>
+<body>
+
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+}
+th {
+    text-align: left;
+}
+html {
+    font-family: Arial, sans-serif ;
+    font-size: 90% ;
+}
+</style>
+
+
+<h1><b>Commands</b></h1>
+
+
+
+<table>
+	<thead>
+		<tr style = "border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
+			<th rowspan = "2">Mnemonic</th>
+			<th rowspan = "2">ID</th>
+			<th rowspan = "2">Description</th>
+			<th rowspan = "1" colspan = "3">Arguments</th>
+		</tr>
+		<tr style = "border-right: 2px solid black; ">
+			<th>Argument</th>
+			<th>Type</th>
+			<th>Description</th>
+		<tr>
+	</thead>
+	<tbody>
+	
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">MR_SET_FACTOR1</td>
+			<td rowspan="2">['0']</td>
+			<td rowspan="2">Set operation multiplication factor1</td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>val</td>
+						<td>F32</td>
+						<td>The first factor</td>
+					</tr>
+		</tr>
+		<tr style = "border: 2px solid black;">
+			<td rowspan="1">MR_CLEAR_EVENT_THROTTLE</td>
+			<td rowspan="1">['1']</td>
+			<td rowspan="1">Clear the event throttle</td>
+				<td></td>
+				<td></td>
+				<td></td>
+		</tr>
+	</tbody>
+</table>   
+
+
+
+<h1><b>Telemetry</b></h1>
+<table>
+  <tr>
+     <th>Channel Name</th>
+     <th>ID</th>
+     <th>Type</th>
+     <th>Description</th>
+ </tr>
+
+ <tr>
+    <td>MR_OPERATION</td>
+    <td>['0']</td>
+    <td>Ref::MathOp</td>
+    <td>The operation</td>
+ </tr>
+ <tr>
+    <td>MR_FACTOR1S</td>
+    <td>['1']</td>
+    <td>U32</td>
+    <td>The number of MR_SET_FACTOR1 commands</td>
+ </tr>
+ <tr>
+    <td>MR_FACTOR1</td>
+    <td>['2']</td>
+    <td>F32</td>
+    <td>Factor 1 value</td>
+ </tr>
+ <tr>
+    <td>MR_FACTOR2</td>
+    <td>['3']</td>
+    <td>F32</td>
+    <td>Factor 2 value</td>
+ </tr>
+</table>
+
+<h1><b>Events</b></h1>
+
+
+
+
+<table>
+	<thead>
+		<tr style = "border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
+			<th rowspan = "2">Event Name</th>
+			<th rowspan = "2">ID</th>
+			<th rowspan = "2">Description</th>
+			<th rowspan = "1" colspan = "4">Arguments</th>
+		</tr>
+		<tr style = "border-right: 2px solid black; ">
+			<th>Argument</th>
+			<th>Type</th>
+			<th>Size</th>
+			<th>Description</th>
+		<tr>
+	</thead>
+	<tbody>
+	
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">MR_SET_FACTOR1</td>
+			<td rowspan="2">['0']</td>
+			<td rowspan="2">Operation factor 1</td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>val</td>
+						<td>F32</td>
+						<td></td>
+						<td>The factor value</td>
+					</tr>
+		</tr>
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">MR_UPDATED_FACTOR2</td>
+			<td rowspan="2">['1']</td>
+			<td rowspan="2">Updated factor 2</td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>val</td>
+						<td>F32</td>
+						<td></td>
+						<td>The factor value</td>
+					</tr>
+		</tr>
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">MR_OPERATION_PERFORMED</td>
+			<td rowspan="2">['2']</td>
+			<td rowspan="2">Math operation performed</td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>val</td>
+						<td>Ref::MathOp</td>
+						<td></td>
+						<td>The operation</td>
+					</tr>
+		</tr>
+		<tr style = "border: 2px solid black;">
+			<td rowspan="1">MR_THROTTLE_CLEARED</td>
+			<td rowspan="1">['3']</td>
+			<td rowspan="1">Event throttle cleared</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+		</tr>
+	</tbody>
+</table> 
+
+
+
+</body>
+</html>

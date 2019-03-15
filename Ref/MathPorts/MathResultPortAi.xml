@@ -1,0 +1,6 @@
+<interface name = "MathResult" namespace = "Ref">
+	<args>
+		<arg name = "result" type = "F32"></arg>
+	</args>
+</interface>
+		

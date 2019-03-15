@@ -88,10 +88,10 @@ REF_MODULES := \
 	Ref/SendBuffApp \
 	Ref/SignalGen \
 	Ref/PingReceiver \
-	Ref/MathPorts \
-	Ref/MathTypes \
 	Ref/MathSender \
-	Ref/MathReceiver
+	Ref/MathReceiver \
+	Ref/MathPorts \
+	Ref/MathTypes 
 	
 Ref_MODULES := \
 	\

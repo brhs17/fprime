@@ -1,0 +1,125 @@
+        -:    0:Source:/home/bhs/fprime/Ref/MathSender/MathSenderComponentImpl.cpp
+        -:    0:Programs:2
+        -:    1:// ====================================================================== 
+        -:    2:// \title  MathSenderImpl.cpp
+        -:    3:// \author bhs
+        -:    4:// \brief  cpp file for MathSender component implementation class
+        -:    5://
+        -:    6:// \copyright
+        -:    7:// Copyright 2009-2015, by the California Institute of Technology.
+        -:    8:// ALL RIGHTS RESERVED.  United States Government Sponsorship
+        -:    9:// acknowledged. Any commercial use must be negotiated with the Office
+        -:   10:// of Technology Transfer at the California Institute of Technology.
+        -:   11:// 
+        -:   12:// This software may be subject to U.S. export control laws and
+        -:   13:// regulations.  By accepting this document, the user agrees to comply
+        -:   14:// with all U.S. export laws and regulations.  User has the
+        -:   15:// responsibility to obtain export licenses, or other export authority
+        -:   16:// as may be required before exporting such information to foreign
+        -:   17:// countries or providing access to foreign persons.
+        -:   18:// ====================================================================== 
+        -:   19:
+        -:   20:
+        -:   21:#include <Ref/MathSender/MathSenderComponentImpl.hpp>
+        -:   22:#include "Fw/Types/BasicTypes.hpp"
+        -:   23:
+        -:   24:namespace Ref {
+        -:   25:
+        -:   26:  // ----------------------------------------------------------------------
+        -:   27:  // Construction, initialization, and destruction 
+        -:   28:  // ----------------------------------------------------------------------
+        -:   29:
+        8:   30:  MathSenderComponentImpl ::
+        -:   31:#if FW_OBJECT_NAMES == 1
+        -:   32:    MathSenderComponentImpl(
+        -:   33:        const char *const compName
+        8:   34:    ) :
+        8:   35:      MathSenderComponentBase(compName)
+        -:   36:#else
+        -:   37:    MathSenderImpl(void)
+        -:   38:#endif
+        -:   39:  {
+        -:   40:
+        8:   41:  }
+        -:   42:
+        8:   43:  void MathSenderComponentImpl ::
+        -:   44:    init(
+        -:   45:        const NATIVE_INT_TYPE queueDepth,
+        -:   46:        const NATIVE_INT_TYPE instance
+        -:   47:    ) 
+        -:   48:  {
+        8:   49:    MathSenderComponentBase::init(queueDepth, instance);
+        8:   50:  }
+        -:   51:
+        8:   52:  MathSenderComponentImpl ::
+        8:   53:    ~MathSenderComponentImpl(void)
+        -:   54:  {
+        -:   55:
+        8:   56:  }
+        -:   57:
+        -:   58:  // ----------------------------------------------------------------------
+        -:   59:  // Handler implementations for user-defined typed input ports
+        -:   60:  // ----------------------------------------------------------------------
+        -:   61:
+        8:   62:  void MathSenderComponentImpl ::
+        -:   63:    mathIn_handler(
+        -:   64:        const NATIVE_INT_TYPE portNum,
+        -:   65:        F32 result
+        -:   66:    )
+        -:   67:  {
+        -:   68:    // TODO
+        8:   69:	this->tlmWrite_MS_RES(result);
+        8:   70:	this->log_ACTIVITY_HI_MS_RESULT(result);
+        8:   71:  }
+        -:   72:
+        -:   73:  // ----------------------------------------------------------------------
+        -:   74:  // Command handler implementations 
+        -:   75:  // ----------------------------------------------------------------------
+        -:   76:
+        8:   77:  void MathSenderComponentImpl ::
+        -:   78:    MS_DO_MATH_cmdHandler(
+        -:   79:        const FwOpcodeType opCode,
+        -:   80:        const U32 cmdSeq,
+        -:   81:        F32 val1,
+        -:   82:        F32 val2,
+        -:   83:        MathOp operation
+        -:   84:    )
+        -:   85:  {
+        -:   86:    // TODO
+        -:   87:    MathOpTlm opTlm;
+        -:   88:    MathOperation opPort;
+        -:   89:    MathOpEv opEv;
+        8:   90:    switch (operation) {
+        2:   91:	case ADD:
+        2:   92:		opTlm = ADD_TLM;
+        2:   93:		opPort = MATH_ADD;
+        2:   94:		opEv = ADD_EV;
+        2:   95:		break;
+        2:   96:	case SUBTRACT:
+        2:   97:		opTlm = SUB_TLM;
+        2:   98:		opPort = MATH_SUB;
+        2:   99:		opEv = SUB_EV;
+        2:  100:		break;
+        2:  101:	case MULTIPLY:
+        2:  102:		opTlm = MULT_TLM;
+        2:  103:		opPort = MATH_MULTIPLY;
+        2:  104:		opEv = MULT_EV;
+        2:  105:		break;
+        2:  106:	case DIVIDE:
+        2:  107:		opTlm = DIV_TLM;
+        2:  108:		opPort = MATH_DIVIDE;
+        2:  109:		opEv = DIV_EV;
+        2:  110:		break;
+    #####:  111:	default:
+    #####:  112:		FW_ASSERT(0, operation);
+    #####:  113:		break;
+        -:  114:	}
+        8:  115:    this->tlmWrite_MS_OP(opTlm);
+        8:  116:    this->tlmWrite_MS_VAL1(val1);
+        8:  117:    this->tlmWrite_MS_VAL2(val2);
+        8:  118:    this->log_ACTIVITY_LO_MS_COMMAND_RECV(val1,val2,opEv);
+        8:  119:    this->mathOut_out(0,val1,val2,opPort);
+        8:  120:    this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
+        8:  121:  }
+        -:  122:
+        6:  123:} // end namespace Ref

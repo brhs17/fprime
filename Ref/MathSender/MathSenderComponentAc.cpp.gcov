@@ -1,0 +1,1458 @@
+        -:    0:Source:/home/bhs/fprime/Ref/MathSender/MathSenderComponentAc.cpp
+        -:    0:Programs:2
+        -:    1:// ====================================================================== 
+        -:    2:// \title  MathSenderComponentAc.hpp
+        -:    3:// \author Auto-generated
+        -:    4:// \brief  cpp file for MathSender component base class
+        -:    5://
+        -:    6:// \copyright
+        -:    7:// Copyright 2009-2015, by the California Institute of Technology.
+        -:    8:// ALL RIGHTS RESERVED.  United States Government Sponsorship
+        -:    9:// acknowledged. Any commercial use must be negotiated with the Office
+        -:   10:// of Technology Transfer at the California Institute of Technology.
+        -:   11:// 
+        -:   12:// This software may be subject to U.S. export control laws and
+        -:   13:// regulations.  By accepting this document, the user agrees to comply
+        -:   14:// with all U.S. export laws and regulations.  User has the
+        -:   15:// responsibility to obtain export licenses, or other export authority
+        -:   16:// as may be required before exporting such information to foreign
+        -:   17:// countries or providing access to foreign persons.
+        -:   18:// ====================================================================== 
+        -:   19:
+        -:   20:#include <stdio.h>
+        -:   21:#include <Fw/Cfg/Config.hpp>
+        -:   22:#include <Ref/MathSender/MathSenderComponentAc.hpp>
+        -:   23:#include <Fw/Types/Assert.hpp>
+        -:   24:#if FW_ENABLE_TEXT_LOGGING
+        -:   25:#include <Fw/Types/EightyCharString.hpp>
+        -:   26:#endif
+        -:   27:
+        -:   28:
+        -:   29:namespace Ref {
+        -:   30:
+        -:   31:  // ----------------------------------------------------------------------
+        -:   32:  // Anonymous namespace to prevent name collisions
+        -:   33:  // ----------------------------------------------------------------------
+        -:   34:
+        -:   35:  namespace {
+        -:   36:
+        -:   37:    typedef enum {
+        -:   38:      MATHSENDER_COMPONENT_EXIT = Fw::ActiveComponentBase::ACTIVE_COMPONENT_EXIT,
+        -:   39:      MATHIN_MATHRESULT,
+        -:   40:      CMD_MS_DO_MATH
+        -:   41:    } MsgTypeEnum;
+        -:   42:
+        -:   43:    // Get the max size by doing a union of the input port serialization sizes.
+        -:   44:
+        -:   45:    typedef union {
+        -:   46:      BYTE port1[Ref::InputMathResultPort::SERIALIZED_SIZE];
+        -:   47:      BYTE cmdPort[Fw::InputCmdPort::SERIALIZED_SIZE];
+        -:   48:    } BuffUnion;
+        -:   49:
+        -:   50:    // Define a message buffer class large enough to handle all the
+        -:   51:    // asynchronous inputs to the component
+        -:   52:
+       64:   53:    class ComponentIpcSerializableBuffer : 
+        -:   54:      public Fw::SerializeBufferBase
+        -:   55:    {
+        -:   56:
+        -:   57:      public:
+        -:   58:
+        -:   59:        enum {
+        -:   60:          // Max. message size = size of data + message id + port
+        -:   61:          SERIALIZATION_SIZE =
+        -:   62:            sizeof(BuffUnion) +
+        -:   63:            sizeof(NATIVE_INT_TYPE) +
+        -:   64:            sizeof(NATIVE_INT_TYPE)
+        -:   65:        };
+        -:   66:
+      104:   67:        NATIVE_UINT_TYPE getBuffCapacity(void) const {
+      104:   68:          return sizeof(m_buff);
+        -:   69:        }
+        -:   70:
+      656:   71:        U8* getBuffAddr(void) {
+      656:   72:          return m_buff;
+        -:   73:        }
+        -:   74:
+       16:   75:        const U8* getBuffAddr(void) const {
+       16:   76:          return m_buff;
+        -:   77:        }
+        -:   78:
+        -:   79:      private:
+        -:   80:        // Should be the max of all the input ports serialized sizes...
+        -:   81:        U8 m_buff[SERIALIZATION_SIZE];
+        -:   82:
+        -:   83:    };
+        -:   84:
+        -:   85:  }
+        -:   86:
+        -:   87:  // ----------------------------------------------------------------------
+        -:   88:  // Getters for numbers of input ports
+        -:   89:  // ----------------------------------------------------------------------
+        -:   90:
+        8:   91:  Ref::InputMathResultPort *MathSenderComponentBase ::
+        -:   92:    get_mathIn_InputPort(NATIVE_INT_TYPE portNum)
+        -:   93:  {
+        8:   94:    FW_ASSERT(portNum < this->getNum_mathIn_InputPorts(),static_cast<AssertArg>(portNum));
+        8:   95:    return &this->m_mathIn_InputPort[portNum];
+        -:   96:  }
+        -:   97:
+        8:   98:  Fw::InputCmdPort *MathSenderComponentBase ::
+        -:   99:    get_CmdDisp_InputPort(NATIVE_INT_TYPE portNum)
+        -:  100:  {
+        8:  101:    FW_ASSERT(portNum < this->getNum_CmdDisp_InputPorts(),static_cast<AssertArg>(portNum));
+        8:  102:    return &this->m_CmdDisp_InputPort[portNum];
+        -:  103:  }
+        -:  104:
+        -:  105:  // ----------------------------------------------------------------------
+        -:  106:  // Typed connectors for output ports
+        -:  107:  // ----------------------------------------------------------------------
+        -:  108:
+        8:  109:  void MathSenderComponentBase ::
+        -:  110:    set_mathOut_OutputPort(
+        -:  111:        NATIVE_INT_TYPE portNum,
+        -:  112:        Ref::InputMathOpPort* port
+        -:  113:    )
+        -:  114:  {
+        8:  115:    FW_ASSERT(portNum < this->getNum_mathOut_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  116:    this->m_mathOut_OutputPort[portNum].addCallPort(port);
+        8:  117:  }
+        -:  118:
+        8:  119:  void MathSenderComponentBase ::
+        -:  120:    set_CmdStatus_OutputPort(
+        -:  121:        NATIVE_INT_TYPE portNum,
+        -:  122:        Fw::InputCmdResponsePort* port
+        -:  123:    )
+        -:  124:  {
+        8:  125:    FW_ASSERT(portNum < this->getNum_CmdStatus_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  126:    this->m_CmdStatus_OutputPort[portNum].addCallPort(port);
+        8:  127:  }
+        -:  128:
+        8:  129:  void MathSenderComponentBase ::
+        -:  130:    set_CmdReg_OutputPort(
+        -:  131:        NATIVE_INT_TYPE portNum,
+        -:  132:        Fw::InputCmdRegPort* port
+        -:  133:    )
+        -:  134:  {
+        8:  135:    FW_ASSERT(portNum < this->getNum_CmdReg_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  136:    this->m_CmdReg_OutputPort[portNum].addCallPort(port);
+        8:  137:  }
+        -:  138:
+        8:  139:  void MathSenderComponentBase ::
+        -:  140:    set_Tlm_OutputPort(
+        -:  141:        NATIVE_INT_TYPE portNum,
+        -:  142:        Fw::InputTlmPort* port
+        -:  143:    )
+        -:  144:  {
+        8:  145:    FW_ASSERT(portNum < this->getNum_Tlm_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  146:    this->m_Tlm_OutputPort[portNum].addCallPort(port);
+        8:  147:  }
+        -:  148:
+        8:  149:  void MathSenderComponentBase ::
+        -:  150:    set_Time_OutputPort(
+        -:  151:        NATIVE_INT_TYPE portNum,
+        -:  152:        Fw::InputTimePort* port
+        -:  153:    )
+        -:  154:  {
+        8:  155:    FW_ASSERT(portNum < this->getNum_Time_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  156:    this->m_Time_OutputPort[portNum].addCallPort(port);
+        8:  157:  }
+        -:  158:
+        8:  159:  void MathSenderComponentBase ::
+        -:  160:    set_Log_OutputPort(
+        -:  161:        NATIVE_INT_TYPE portNum,
+        -:  162:        Fw::InputLogPort* port
+        -:  163:    )
+        -:  164:  {
+        8:  165:    FW_ASSERT(portNum < this->getNum_Log_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  166:    this->m_Log_OutputPort[portNum].addCallPort(port);
+        8:  167:  }
+        -:  168:
+        -:  169:#if FW_ENABLE_TEXT_LOGGING == 1
+        8:  170:  void MathSenderComponentBase ::
+        -:  171:    set_LogText_OutputPort(
+        -:  172:        NATIVE_INT_TYPE portNum,
+        -:  173:        Fw::InputLogTextPort* port
+        -:  174:    )
+        -:  175:  {
+        8:  176:    FW_ASSERT(portNum < this->getNum_LogText_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  177:    this->m_LogText_OutputPort[portNum].addCallPort(port);
+        8:  178:  }
+        -:  179:#endif
+        -:  180:
+        -:  181:  // ----------------------------------------------------------------------
+        -:  182:  // Serialization connectors for output ports
+        -:  183:  // ----------------------------------------------------------------------
+        -:  184:
+        -:  185:#if FW_PORT_SERIALIZATION
+        -:  186:
+    #####:  187:  void MathSenderComponentBase ::
+        -:  188:    set_mathOut_OutputPort(
+        -:  189:        NATIVE_INT_TYPE portNum,
+        -:  190:        Fw::InputSerializePort *port
+        -:  191:    )
+        -:  192:  {
+    #####:  193:    FW_ASSERT(portNum < this->getNum_mathOut_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  194:    return this->m_mathOut_OutputPort[portNum].registerSerialPort(port);
+        -:  195:  }
+        -:  196:
+    #####:  197:  void MathSenderComponentBase ::
+        -:  198:    set_CmdStatus_OutputPort(
+        -:  199:        NATIVE_INT_TYPE portNum,
+        -:  200:        Fw::InputSerializePort *port
+        -:  201:    )
+        -:  202:  {
+    #####:  203:    FW_ASSERT(portNum < this->getNum_CmdStatus_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  204:    return this->m_CmdStatus_OutputPort[portNum].registerSerialPort(port);
+        -:  205:  }
+        -:  206:
+    #####:  207:  void MathSenderComponentBase ::
+        -:  208:    set_CmdReg_OutputPort(
+        -:  209:        NATIVE_INT_TYPE portNum,
+        -:  210:        Fw::InputSerializePort *port
+        -:  211:    )
+        -:  212:  {
+    #####:  213:    FW_ASSERT(portNum < this->getNum_CmdReg_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  214:    return this->m_CmdReg_OutputPort[portNum].registerSerialPort(port);
+        -:  215:  }
+        -:  216:
+    #####:  217:  void MathSenderComponentBase ::
+        -:  218:    set_Tlm_OutputPort(
+        -:  219:        NATIVE_INT_TYPE portNum,
+        -:  220:        Fw::InputSerializePort *port
+        -:  221:    )
+        -:  222:  {
+    #####:  223:    FW_ASSERT(portNum < this->getNum_Tlm_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  224:    return this->m_Tlm_OutputPort[portNum].registerSerialPort(port);
+        -:  225:  }
+        -:  226:
+    #####:  227:  void MathSenderComponentBase ::
+        -:  228:    set_Time_OutputPort(
+        -:  229:        NATIVE_INT_TYPE portNum,
+        -:  230:        Fw::InputSerializePort *port
+        -:  231:    )
+        -:  232:  {
+    #####:  233:    FW_ASSERT(portNum < this->getNum_Time_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  234:    return this->m_Time_OutputPort[portNum].registerSerialPort(port);
+        -:  235:  }
+        -:  236:
+    #####:  237:  void MathSenderComponentBase ::
+        -:  238:    set_Log_OutputPort(
+        -:  239:        NATIVE_INT_TYPE portNum,
+        -:  240:        Fw::InputSerializePort *port
+        -:  241:    )
+        -:  242:  {
+    #####:  243:    FW_ASSERT(portNum < this->getNum_Log_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  244:    return this->m_Log_OutputPort[portNum].registerSerialPort(port);
+        -:  245:  }
+        -:  246:
+        -:  247:#if FW_ENABLE_TEXT_LOGGING == 1
+    #####:  248:  void MathSenderComponentBase ::
+        -:  249:    set_LogText_OutputPort(
+        -:  250:        NATIVE_INT_TYPE portNum,
+        -:  251:        Fw::InputSerializePort *port
+        -:  252:    )
+        -:  253:  {
+    #####:  254:    FW_ASSERT(portNum < this->getNum_LogText_OutputPorts(),static_cast<AssertArg>(portNum));
+    #####:  255:    return this->m_LogText_OutputPort[portNum].registerSerialPort(port);
+        -:  256:  }
+        -:  257:#endif
+        -:  258:
+        -:  259:#endif
+        -:  260:
+        -:  261:  // ----------------------------------------------------------------------
+        -:  262:  // Command registration
+        -:  263:  // ----------------------------------------------------------------------
+        -:  264:
+    #####:  265:  void MathSenderComponentBase ::
+        -:  266:    regCommands(void)
+        -:  267:  {
+    #####:  268:    FW_ASSERT(this->m_CmdReg_OutputPort[0].isConnected());
+    #####:  269:    this->m_CmdReg_OutputPort[0].invoke(
+        -:  270:        this->getIdBase() + OPCODE_MS_DO_MATH
+        -:  271:    );
+    #####:  272:  }
+        -:  273:
+        -:  274:  // ----------------------------------------------------------------------
+        -:  275:  // Component construction, initialization, and destruction
+        -:  276:  // ----------------------------------------------------------------------
+        -:  277:
+        8:  278:  MathSenderComponentBase ::
+        -:  279:#if FW_OBJECT_NAMES == 1
+        8:  280:    MathSenderComponentBase(const char* compName) :
+        8:  281:      Fw::ActiveComponentBase(compName)
+        -:  282:#else
+        -:  283:    MathSenderComponentBase() :
+        -:  284:      Fw::ActiveComponentBase()
+        -:  285:#endif
+        -:  286:  {
+        -:  287:
+        -:  288:  
+        -:  289:  
+        8:  290:  }
+        -:  291:
+        8:  292:  void MathSenderComponentBase ::
+        -:  293:    init(
+        -:  294:        NATIVE_INT_TYPE queueDepth,
+        -:  295:        NATIVE_INT_TYPE instance
+        -:  296:    )
+        -:  297:  {
+        -:  298:
+        -:  299:    // Initialize base class
+        8:  300:    Fw::ActiveComponentBase::init(instance);
+        -:  301:
+        -:  302:    // Connect input port mathIn
+        8:  303:    for (
+        8:  304:        NATIVE_INT_TYPE port = 0;
+       16:  305:        port < this->getNum_mathIn_InputPorts();
+        -:  306:        port++
+        -:  307:    ) {
+        -:  308:
+        8:  309:      this->m_mathIn_InputPort[port].init();
+        8:  310:      this->m_mathIn_InputPort[port].addCallComp(
+        -:  311:          this,
+        -:  312:          m_p_mathIn_in
+        -:  313:      );
+        8:  314:      this->m_mathIn_InputPort[port].setPortNum(port);
+        -:  315:
+        -:  316:#if FW_OBJECT_NAMES == 1
+        -:  317:      char portName[80];
+        8:  318:      (void) snprintf(
+        -:  319:          portName,
+        -:  320:          sizeof(portName),
+        -:  321:          "%s_mathIn_InputPort[%d]",
+        -:  322:          this->m_objName,
+        -:  323:          port
+        -:  324:      );
+        8:  325:      this->m_mathIn_InputPort[port].setObjName(portName);
+        -:  326:#endif
+        -:  327:
+        -:  328:    }
+        -:  329:
+        -:  330:    // Connect input port CmdDisp
+        8:  331:    for (
+        8:  332:        NATIVE_INT_TYPE port = 0;
+       16:  333:        port < this->getNum_CmdDisp_InputPorts();
+        -:  334:        port++
+        -:  335:    ) {
+        -:  336:
+        8:  337:      this->m_CmdDisp_InputPort[port].init();
+        8:  338:      this->m_CmdDisp_InputPort[port].addCallComp(
+        -:  339:          this,
+        -:  340:          m_p_CmdDisp_in
+        -:  341:      );
+        8:  342:      this->m_CmdDisp_InputPort[port].setPortNum(port);
+        -:  343:
+        -:  344:#if FW_OBJECT_NAMES == 1
+        -:  345:      char portName[80];
+        8:  346:      (void) snprintf(
+        -:  347:          portName,
+        -:  348:          sizeof(portName),
+        -:  349:          "%s_CmdDisp_InputPort[%d]",
+        -:  350:          this->m_objName,
+        -:  351:          port
+        -:  352:      );
+        8:  353:      this->m_CmdDisp_InputPort[port].setObjName(portName);
+        -:  354:#endif
+        -:  355:
+        -:  356:    }
+        -:  357:
+        -:  358:    // Initialize output port mathOut
+        8:  359:    for (
+        8:  360:        NATIVE_INT_TYPE port = 0;
+       16:  361:        port < this->getNum_mathOut_OutputPorts();
+        -:  362:        port++
+        -:  363:    ) {
+        8:  364:      this->m_mathOut_OutputPort[port].init();
+        -:  365:
+        -:  366:#if FW_OBJECT_NAMES == 1
+        -:  367:      char portName[80];
+        8:  368:      (void) snprintf(
+        -:  369:          portName,
+        -:  370:          sizeof(portName),
+        -:  371:          "%s_mathOut_OutputPort[%d]",
+        -:  372:          this->m_objName,
+        -:  373:          port
+        -:  374:      );
+        8:  375:      this->m_mathOut_OutputPort[port].setObjName(portName);
+        -:  376:#endif
+        -:  377:
+        -:  378:    }
+        -:  379:
+        -:  380:    // Initialize output port CmdStatus
+        8:  381:    for (
+        8:  382:        NATIVE_INT_TYPE port = 0;
+       16:  383:        port < this->getNum_CmdStatus_OutputPorts();
+        -:  384:        port++
+        -:  385:    ) {
+        8:  386:      this->m_CmdStatus_OutputPort[port].init();
+        -:  387:
+        -:  388:#if FW_OBJECT_NAMES == 1
+        -:  389:      char portName[80];
+        8:  390:      (void) snprintf(
+        -:  391:          portName,
+        -:  392:          sizeof(portName),
+        -:  393:          "%s_CmdStatus_OutputPort[%d]",
+        -:  394:          this->m_objName,
+        -:  395:          port
+        -:  396:      );
+        8:  397:      this->m_CmdStatus_OutputPort[port].setObjName(portName);
+        -:  398:#endif
+        -:  399:
+        -:  400:    }
+        -:  401:
+        -:  402:    // Initialize output port CmdReg
+        8:  403:    for (
+        8:  404:        NATIVE_INT_TYPE port = 0;
+       16:  405:        port < this->getNum_CmdReg_OutputPorts();
+        -:  406:        port++
+        -:  407:    ) {
+        8:  408:      this->m_CmdReg_OutputPort[port].init();
+        -:  409:
+        -:  410:#if FW_OBJECT_NAMES == 1
+        -:  411:      char portName[80];
+        8:  412:      (void) snprintf(
+        -:  413:          portName,
+        -:  414:          sizeof(portName),
+        -:  415:          "%s_CmdReg_OutputPort[%d]",
+        -:  416:          this->m_objName,
+        -:  417:          port
+        -:  418:      );
+        8:  419:      this->m_CmdReg_OutputPort[port].setObjName(portName);
+        -:  420:#endif
+        -:  421:
+        -:  422:    }
+        -:  423:
+        -:  424:    // Initialize output port Tlm
+        8:  425:    for (
+        8:  426:        NATIVE_INT_TYPE port = 0;
+       16:  427:        port < this->getNum_Tlm_OutputPorts();
+        -:  428:        port++
+        -:  429:    ) {
+        8:  430:      this->m_Tlm_OutputPort[port].init();
+        -:  431:
+        -:  432:#if FW_OBJECT_NAMES == 1
+        -:  433:      char portName[80];
+        8:  434:      (void) snprintf(
+        -:  435:          portName,
+        -:  436:          sizeof(portName),
+        -:  437:          "%s_Tlm_OutputPort[%d]",
+        -:  438:          this->m_objName,
+        -:  439:          port
+        -:  440:      );
+        8:  441:      this->m_Tlm_OutputPort[port].setObjName(portName);
+        -:  442:#endif
+        -:  443:
+        -:  444:    }
+        -:  445:
+        -:  446:    // Initialize output port Time
+        8:  447:    for (
+        8:  448:        NATIVE_INT_TYPE port = 0;
+       16:  449:        port < this->getNum_Time_OutputPorts();
+        -:  450:        port++
+        -:  451:    ) {
+        8:  452:      this->m_Time_OutputPort[port].init();
+        -:  453:
+        -:  454:#if FW_OBJECT_NAMES == 1
+        -:  455:      char portName[80];
+        8:  456:      (void) snprintf(
+        -:  457:          portName,
+        -:  458:          sizeof(portName),
+        -:  459:          "%s_Time_OutputPort[%d]",
+        -:  460:          this->m_objName,
+        -:  461:          port
+        -:  462:      );
+        8:  463:      this->m_Time_OutputPort[port].setObjName(portName);
+        -:  464:#endif
+        -:  465:
+        -:  466:    }
+        -:  467:
+        -:  468:    // Initialize output port Log
+        8:  469:    for (
+        8:  470:        NATIVE_INT_TYPE port = 0;
+       16:  471:        port < this->getNum_Log_OutputPorts();
+        -:  472:        port++
+        -:  473:    ) {
+        8:  474:      this->m_Log_OutputPort[port].init();
+        -:  475:
+        -:  476:#if FW_OBJECT_NAMES == 1
+        -:  477:      char portName[80];
+        8:  478:      (void) snprintf(
+        -:  479:          portName,
+        -:  480:          sizeof(portName),
+        -:  481:          "%s_Log_OutputPort[%d]",
+        -:  482:          this->m_objName,
+        -:  483:          port
+        -:  484:      );
+        8:  485:      this->m_Log_OutputPort[port].setObjName(portName);
+        -:  486:#endif
+        -:  487:
+        -:  488:    }
+        -:  489:
+        -:  490:    // Initialize output port LogText
+        -:  491:#if FW_ENABLE_TEXT_LOGGING == 1
+        8:  492:    for (
+        8:  493:        NATIVE_INT_TYPE port = 0;
+       16:  494:        port < this->getNum_LogText_OutputPorts();
+        -:  495:        port++
+        -:  496:    ) {
+        8:  497:      this->m_LogText_OutputPort[port].init();
+        -:  498:
+        -:  499:#if FW_OBJECT_NAMES == 1
+        -:  500:      char portName[80];
+        8:  501:      (void) snprintf(
+        -:  502:          portName,
+        -:  503:          sizeof(portName),
+        -:  504:          "%s_LogText_OutputPort[%d]",
+        -:  505:          this->m_objName,
+        -:  506:          port
+        -:  507:      );
+        8:  508:      this->m_LogText_OutputPort[port].setObjName(portName);
+        -:  509:#endif
+        -:  510:
+        -:  511:    }
+        -:  512:#endif
+        -:  513:
+        -:  514:    Os::Queue::QueueStatus qStat =
+        8:  515:    this->createQueue(
+        -:  516:        queueDepth,
+        -:  517:        ComponentIpcSerializableBuffer::SERIALIZATION_SIZE
+        8:  518:    );
+        8:  519:    FW_ASSERT(
+        -:  520:        Os::Queue::QUEUE_OK == qStat,
+        -:  521:        static_cast<AssertArg>(qStat)
+        -:  522:    );
+        -:  523:
+        8:  524:  }
+        -:  525:
+        8:  526:  MathSenderComponentBase::
+        8:  527:    ~MathSenderComponentBase() {
+        -:  528:
+        8:  529:  }
+        -:  530:
+        -:  531:  // ----------------------------------------------------------------------
+        -:  532:  // Invocation functions for output ports
+        -:  533:  // ----------------------------------------------------------------------
+        -:  534:
+        8:  535:  void MathSenderComponentBase ::
+        -:  536:    mathOut_out(
+        -:  537:        NATIVE_INT_TYPE portNum,
+        -:  538:        F32 val1, F32 val2, MathOperation operation
+        -:  539:    )
+        -:  540:  {
+        8:  541:    FW_ASSERT(portNum < this->getNum_mathOut_OutputPorts(),static_cast<AssertArg>(portNum));
+        8:  542:    this->m_mathOut_OutputPort[portNum].invoke(val1, val2, operation);
+        8:  543:  }
+        -:  544:
+        -:  545:  // ----------------------------------------------------------------------
+        -:  546:  // Getters for numbers of ports
+        -:  547:  // ----------------------------------------------------------------------
+        -:  548:
+       32:  549:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  550:    getNum_mathOut_OutputPorts(void)
+        -:  551:  {
+       32:  552:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  553:        this->m_mathOut_OutputPort
+        -:  554:    );
+        -:  555:  }
+        -:  556:
+       32:  557:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  558:    getNum_mathIn_InputPorts(void)
+        -:  559:  {
+       32:  560:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  561:        this->m_mathIn_InputPort
+        -:  562:    );
+        -:  563:  }
+        -:  564:
+       24:  565:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  566:    getNum_CmdDisp_InputPorts(void)
+        -:  567:  {
+       24:  568:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  569:        this->m_CmdDisp_InputPort
+        -:  570:    );
+        -:  571:  }
+        -:  572:
+       24:  573:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  574:    getNum_CmdStatus_OutputPorts(void)
+        -:  575:  {
+       24:  576:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  577:        this->m_CmdStatus_OutputPort
+        -:  578:    );
+        -:  579:  }
+        -:  580:
+       24:  581:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  582:    getNum_CmdReg_OutputPorts(void)
+        -:  583:  {
+       24:  584:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  585:        this->m_CmdReg_OutputPort
+        -:  586:    );
+        -:  587:  }
+        -:  588:
+       24:  589:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  590:    getNum_Tlm_OutputPorts(void)
+        -:  591:  {
+       24:  592:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  593:        this->m_Tlm_OutputPort
+        -:  594:    );
+        -:  595:  }
+        -:  596:
+       24:  597:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  598:    getNum_Time_OutputPorts(void)
+        -:  599:  {
+       24:  600:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  601:        this->m_Time_OutputPort
+        -:  602:    );
+        -:  603:  }
+        -:  604:
+       24:  605:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  606:    getNum_Log_OutputPorts(void)
+        -:  607:  {
+       24:  608:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  609:        this->m_Log_OutputPort
+        -:  610:    );
+        -:  611:  }
+        -:  612:
+        -:  613:#if FW_ENABLE_TEXT_LOGGING == 1
+       24:  614:  NATIVE_INT_TYPE MathSenderComponentBase ::
+        -:  615:    getNum_LogText_OutputPorts(void)
+        -:  616:  {
+       24:  617:    return (NATIVE_INT_TYPE) FW_NUM_ARRAY_ELEMENTS(
+        -:  618:        this->m_LogText_OutputPort
+        -:  619:    );
+        -:  620:  }
+        -:  621:#endif
+        -:  622:
+        -:  623:  // ----------------------------------------------------------------------
+        -:  624:  // Port connection status queries
+        -:  625:  // ----------------------------------------------------------------------
+        -:  626:
+    #####:  627:  bool MathSenderComponentBase ::
+        -:  628:    isConnected_mathOut_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  629:  {
+    #####:  630:     FW_ASSERT(
+        -:  631:        portNum < this->getNum_mathOut_OutputPorts(),
+        -:  632:        static_cast<AssertArg>(portNum)
+        -:  633:     );
+    #####:  634:     return this->m_mathOut_OutputPort[portNum].isConnected();
+        -:  635:  }
+        -:  636:
+    #####:  637:  bool MathSenderComponentBase ::
+        -:  638:    isConnected_CmdStatus_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  639:  {
+    #####:  640:     FW_ASSERT(
+        -:  641:        portNum < this->getNum_CmdStatus_OutputPorts(),
+        -:  642:        static_cast<AssertArg>(portNum)
+        -:  643:     );
+    #####:  644:     return this->m_CmdStatus_OutputPort[portNum].isConnected();
+        -:  645:  }
+        -:  646:
+    #####:  647:  bool MathSenderComponentBase ::
+        -:  648:    isConnected_CmdReg_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  649:  {
+    #####:  650:     FW_ASSERT(
+        -:  651:        portNum < this->getNum_CmdReg_OutputPorts(),
+        -:  652:        static_cast<AssertArg>(portNum)
+        -:  653:     );
+    #####:  654:     return this->m_CmdReg_OutputPort[portNum].isConnected();
+        -:  655:  }
+        -:  656:
+    #####:  657:  bool MathSenderComponentBase ::
+        -:  658:    isConnected_Tlm_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  659:  {
+    #####:  660:     FW_ASSERT(
+        -:  661:        portNum < this->getNum_Tlm_OutputPorts(),
+        -:  662:        static_cast<AssertArg>(portNum)
+        -:  663:     );
+    #####:  664:     return this->m_Tlm_OutputPort[portNum].isConnected();
+        -:  665:  }
+        -:  666:
+    #####:  667:  bool MathSenderComponentBase ::
+        -:  668:    isConnected_Time_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  669:  {
+    #####:  670:     FW_ASSERT(
+        -:  671:        portNum < this->getNum_Time_OutputPorts(),
+        -:  672:        static_cast<AssertArg>(portNum)
+        -:  673:     );
+    #####:  674:     return this->m_Time_OutputPort[portNum].isConnected();
+        -:  675:  }
+        -:  676:
+    #####:  677:  bool MathSenderComponentBase ::
+        -:  678:    isConnected_Log_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  679:  {
+    #####:  680:     FW_ASSERT(
+        -:  681:        portNum < this->getNum_Log_OutputPorts(),
+        -:  682:        static_cast<AssertArg>(portNum)
+        -:  683:     );
+    #####:  684:     return this->m_Log_OutputPort[portNum].isConnected();
+        -:  685:  }
+        -:  686:
+        -:  687:#if FW_ENABLE_TEXT_LOGGING == 1
+    #####:  688:  bool MathSenderComponentBase ::
+        -:  689:    isConnected_LogText_OutputPort(NATIVE_INT_TYPE portNum)
+        -:  690:  {
+    #####:  691:     FW_ASSERT(
+        -:  692:        portNum < this->getNum_LogText_OutputPorts(),
+        -:  693:        static_cast<AssertArg>(portNum)
+        -:  694:     );
+    #####:  695:     return this->m_LogText_OutputPort[portNum].isConnected();
+        -:  696:  }
+        -:  697:#endif
+        -:  698:
+        -:  699:  // ----------------------------------------------------------------------
+        -:  700:  // Calls for messages received on command input ports
+        -:  701:  // ----------------------------------------------------------------------
+        -:  702:
+        8:  703:  void MathSenderComponentBase ::
+        -:  704:    m_p_CmdDisp_in(
+        -:  705:        Fw::PassiveComponentBase* callComp,
+        -:  706:        NATIVE_INT_TYPE portNum,
+        -:  707:        FwOpcodeType opCode,
+        -:  708:        U32 cmdSeq,
+        -:  709:        Fw::CmdArgBuffer &args
+        -:  710:    )
+        -:  711:  {
+        -:  712:
+        -:  713:    // Select base class function based on opcode
+        8:  714:    FW_ASSERT(callComp);
+        8:  715:    MathSenderComponentBase* compPtr =
+        -:  716:      (MathSenderComponentBase*) callComp;
+        -:  717:
+        8:  718:    const U32 idBase = callComp->getIdBase();
+        8:  719:    FW_ASSERT(opCode >= idBase, opCode, idBase);
+        8:  720:    switch (opCode - idBase) {
+        -:  721:
+        8:  722:      case OPCODE_MS_DO_MATH: /*!< Do a math operation */
+        8:  723:        compPtr->MS_DO_MATH_cmdHandlerBase(
+        -:  724:            opCode,
+        -:  725:            cmdSeq,
+        -:  726:            args
+        -:  727:        );
+        8:  728:        break;
+        -:  729:        
+    #####:  730:      default: {
+    #####:  731:        compPtr->cmdResponse_out(
+        -:  732:            opCode,cmdSeq,
+        -:  733:            Fw::COMMAND_INVALID_OPCODE
+        -:  734:        );
+    #####:  735:        break;
+        -:  736:      }
+        -:  737:
+        -:  738:    }
+        -:  739:
+        8:  740:  }
+        -:  741:
+        8:  742:  void MathSenderComponentBase ::
+        -:  743:    cmdResponse_out(
+        -:  744:        FwOpcodeType opCode,
+        -:  745:        U32 cmdSeq,
+        -:  746:        Fw::CommandResponse response
+        -:  747:    )
+        -:  748:  {
+        8:  749:    FW_ASSERT(this->m_CmdStatus_OutputPort[0].isConnected());
+        8:  750:    this->m_CmdStatus_OutputPort[0].invoke(opCode,cmdSeq,response);
+        8:  751:  }
+        -:  752:
+        -:  753:  // ----------------------------------------------------------------------
+        -:  754:  // Base class command functions
+        -:  755:  // ----------------------------------------------------------------------
+        -:  756:
+        8:  757:  void MathSenderComponentBase ::
+        -:  758:    MS_DO_MATH_cmdHandlerBase(
+        -:  759:        FwOpcodeType opCode,
+        -:  760:        U32 cmdSeq,
+        -:  761:        Fw::CmdArgBuffer &args
+        -:  762:    )
+        -:  763:  {
+        -:  764:
+        -:  765:    // Call pre-message hook
+        8:  766:    this->MS_DO_MATH_preMsgHook(opCode,cmdSeq);
+        -:  767:
+        -:  768:    // Defer deserializing arguments to the message dispatcher
+        -:  769:    // to avoid deserializing and reserializing just for IPC
+       16:  770:    ComponentIpcSerializableBuffer msg;
+        8:  771:    Fw::SerializeStatus _status = Fw::FW_SERIALIZE_OK;
+        -:  772:
+        -:  773:    // Serialize for IPC
+        8:  774:    _status = msg.serialize((NATIVE_INT_TYPE)CMD_MS_DO_MATH);
+        8:  775:    FW_ASSERT (
+        -:  776:        _status == Fw::FW_SERIALIZE_OK,
+        -:  777:        static_cast<AssertArg>(_status)
+        -:  778:        );
+        -:  779:
+        -:  780:    // Fake port number to make message dequeue work
+        8:  781:    NATIVE_INT_TYPE port = 0;
+        8:  782:    _status = msg.serialize(port);
+        8:  783:    FW_ASSERT (
+        -:  784:        _status == Fw::FW_SERIALIZE_OK,
+        -:  785:        static_cast<AssertArg>(_status)
+        -:  786:    );
+        -:  787:
+        8:  788:    _status = msg.serialize(opCode);
+        8:  789:    FW_ASSERT (
+        -:  790:        _status == Fw::FW_SERIALIZE_OK,
+        -:  791:        static_cast<AssertArg>(_status)
+        -:  792:    );
+        -:  793:
+        8:  794:    _status = msg.serialize(cmdSeq);
+        8:  795:    FW_ASSERT (
+        -:  796:        _status == Fw::FW_SERIALIZE_OK,
+        -:  797:        static_cast<AssertArg>(_status)
+        -:  798:    );
+        -:  799:
+        8:  800:    _status = msg.serialize(args);
+        8:  801:    FW_ASSERT (
+        -:  802:        _status == Fw::FW_SERIALIZE_OK,
+        -:  803:        static_cast<AssertArg>(_status)
+        -:  804:    );
+        -:  805:    
+        -:  806:    // send message
+        8:  807:    Os::Queue::QueueBlocking _block = 
+        -:  808:      Os::Queue::QUEUE_NONBLOCKING;
+        -:  809:    Os::Queue::QueueStatus qStatus =
+        8:  810:      this->m_queue.send(msg, 0,_block);
+        8:  811:    FW_ASSERT(
+        -:  812:        qStatus == Os::Queue::QUEUE_OK,
+        -:  813:        static_cast<AssertArg>(qStatus)
+        -:  814:    );    
+        -:  815:
+        8:  816:  }
+        -:  817:
+        8:  818:  void MathSenderComponentBase::
+        -:  819:    MS_DO_MATH_preMsgHook(
+        -:  820:        FwOpcodeType opCode,
+        -:  821:        U32 cmdSeq
+        -:  822:    )
+        -:  823:  {
+        -:  824:    // Defaults to no-op; can be overridden
+        8:  825:  }
+        -:  826:
+        -:  827:  // ----------------------------------------------------------------------
+        -:  828:  // Telemetry write functions
+        -:  829:  // ----------------------------------------------------------------------
+        -:  830:
+        8:  831:  void MathSenderComponentBase ::
+        -:  832:    tlmWrite_MS_VAL1(F32 arg)
+        -:  833:  {
+        -:  834:
+        8:  835:    if (this->m_Tlm_OutputPort[0].isConnected()) {
+       16:  836:      Fw::Time _tlmTime;
+        8:  837:      if (this->m_Time_OutputPort[0].isConnected()) {
+        8:  838:         this->m_Time_OutputPort[0].invoke( _tlmTime);
+        -:  839:      }
+       16:  840:      Fw::TlmBuffer _tlmBuff;
+        8:  841:      Fw::SerializeStatus _stat = _tlmBuff.serialize(arg);
+        8:  842:      FW_ASSERT(
+        -:  843:          _stat == Fw::FW_SERIALIZE_OK,
+        -:  844:          static_cast<AssertArg>(_stat)
+        -:  845:      );
+        -:  846:      
+        -:  847:      FwChanIdType _id;
+        -:  848:      
+        8:  849:      _id = this->getIdBase() + CHANNELID_MS_VAL1;
+        -:  850:      
+        8:  851:      this->m_Tlm_OutputPort[0].invoke(
+        -:  852:          _id,
+        -:  853:          _tlmTime,
+        -:  854:          _tlmBuff
+        -:  855:      );
+        -:  856:    }
+        -:  857:
+        8:  858:  }
+        -:  859:
+        8:  860:  void MathSenderComponentBase ::
+        -:  861:    tlmWrite_MS_VAL2(F32 arg)
+        -:  862:  {
+        -:  863:
+        8:  864:    if (this->m_Tlm_OutputPort[0].isConnected()) {
+       16:  865:      Fw::Time _tlmTime;
+        8:  866:      if (this->m_Time_OutputPort[0].isConnected()) {
+        8:  867:         this->m_Time_OutputPort[0].invoke( _tlmTime);
+        -:  868:      }
+       16:  869:      Fw::TlmBuffer _tlmBuff;
+        8:  870:      Fw::SerializeStatus _stat = _tlmBuff.serialize(arg);
+        8:  871:      FW_ASSERT(
+        -:  872:          _stat == Fw::FW_SERIALIZE_OK,
+        -:  873:          static_cast<AssertArg>(_stat)
+        -:  874:      );
+        -:  875:      
+        -:  876:      FwChanIdType _id;
+        -:  877:      
+        8:  878:      _id = this->getIdBase() + CHANNELID_MS_VAL2;
+        -:  879:      
+        8:  880:      this->m_Tlm_OutputPort[0].invoke(
+        -:  881:          _id,
+        -:  882:          _tlmTime,
+        -:  883:          _tlmBuff
+        -:  884:      );
+        -:  885:    }
+        -:  886:
+        8:  887:  }
+        -:  888:
+        8:  889:  void MathSenderComponentBase ::
+        -:  890:    tlmWrite_MS_OP(MathOpTlm arg)
+        -:  891:  {
+        -:  892:
+        8:  893:    if (this->m_Tlm_OutputPort[0].isConnected()) {
+       16:  894:      Fw::Time _tlmTime;
+        8:  895:      if (this->m_Time_OutputPort[0].isConnected()) {
+        8:  896:         this->m_Time_OutputPort[0].invoke( _tlmTime);
+        -:  897:      }
+       16:  898:      Fw::TlmBuffer _tlmBuff;
+        8:  899:      Fw::SerializeStatus _stat = _tlmBuff.serialize((FwEnumStoreType)arg);
+        8:  900:      FW_ASSERT(
+        -:  901:          _stat == Fw::FW_SERIALIZE_OK,
+        -:  902:          static_cast<AssertArg>(_stat)
+        -:  903:      );
+        -:  904:      
+        -:  905:      FwChanIdType _id;
+        -:  906:      
+        8:  907:      _id = this->getIdBase() + CHANNELID_MS_OP;
+        -:  908:      
+        8:  909:      this->m_Tlm_OutputPort[0].invoke(
+        -:  910:          _id,
+        -:  911:          _tlmTime,
+        -:  912:          _tlmBuff
+        -:  913:      );
+        -:  914:    }
+        -:  915:
+        8:  916:  }
+        -:  917:
+        8:  918:  void MathSenderComponentBase ::
+        -:  919:    tlmWrite_MS_RES(F32 arg)
+        -:  920:  {
+        -:  921:
+        8:  922:    if (this->m_Tlm_OutputPort[0].isConnected()) {
+       16:  923:      Fw::Time _tlmTime;
+        8:  924:      if (this->m_Time_OutputPort[0].isConnected()) {
+        8:  925:         this->m_Time_OutputPort[0].invoke( _tlmTime);
+        -:  926:      }
+       16:  927:      Fw::TlmBuffer _tlmBuff;
+        8:  928:      Fw::SerializeStatus _stat = _tlmBuff.serialize(arg);
+        8:  929:      FW_ASSERT(
+        -:  930:          _stat == Fw::FW_SERIALIZE_OK,
+        -:  931:          static_cast<AssertArg>(_stat)
+        -:  932:      );
+        -:  933:      
+        -:  934:      FwChanIdType _id;
+        -:  935:      
+        8:  936:      _id = this->getIdBase() + CHANNELID_MS_RES;
+        -:  937:      
+        8:  938:      this->m_Tlm_OutputPort[0].invoke(
+        -:  939:          _id,
+        -:  940:          _tlmTime,
+        -:  941:          _tlmBuff
+        -:  942:      );
+        -:  943:    }
+        -:  944:
+        8:  945:  }
+        -:  946:
+        -:  947:  // ----------------------------------------------------------------------
+        -:  948:  // Time
+        -:  949:  // ----------------------------------------------------------------------
+        -:  950:
+    #####:  951:  Fw::Time MathSenderComponentBase ::
+        -:  952:    getTime(void) 
+        -:  953:  {
+    #####:  954:    if (this->m_Time_OutputPort[0].isConnected()) {
+    #####:  955:      Fw::Time _time;
+    #####:  956:      this->m_Time_OutputPort[0].invoke(_time);
+    #####:  957:      return _time;
+        -:  958:    } else {
+    #####:  959:      return Fw::Time(TB_NONE,0,0);
+        -:  960:    }
+        -:  961:  }
+        -:  962:
+        -:  963:  // ----------------------------------------------------------------------
+        -:  964:  // Event handling functions
+        -:  965:  // ----------------------------------------------------------------------
+        -:  966:
+        8:  967:  void MathSenderComponentBase ::
+        -:  968:    log_ACTIVITY_LO_MS_COMMAND_RECV(
+        -:  969:        F32 val1, F32 val2, MathOpEv op
+        -:  970:    )
+        -:  971:  {
+        -:  972:  
+        -:  973:
+        -:  974:    // Get the time
+       16:  975:    Fw::Time _logTime;
+        8:  976:    if (this->m_Time_OutputPort[0].isConnected()) {
+        8:  977:       this->m_Time_OutputPort[0].invoke( _logTime);
+        -:  978:    }
+        -:  979:    
+        8:  980:    FwEventIdType _id = static_cast<FwEventIdType>(0);
+        -:  981:    
+        8:  982:    _id = this->getIdBase() + EVENTID_MS_COMMAND_RECV;
+        -:  983:
+        -:  984:    // Emit the event on the log port
+        8:  985:    if (this->m_Log_OutputPort[0].isConnected()) {
+        -:  986:
+       16:  987:      Fw::LogBuffer _logBuff;
+        8:  988:      Fw::SerializeStatus _status = Fw::FW_SERIALIZE_OK;
+        -:  989:
+        -:  990:#if FW_AMPCS_COMPATIBLE
+        -:  991:      // Serialize the number of arguments
+        -:  992:      _status = _logBuff.serialize(static_cast<U8>(3));
+        -:  993:      FW_ASSERT(
+        -:  994:          _status == Fw::FW_SERIALIZE_OK,
+        -:  995:          static_cast<AssertArg>(_status)
+        -:  996:      );
+        -:  997:#endif
+        -:  998:
+        -:  999:#if FW_AMPCS_COMPATIBLE
+        -: 1000:      // Serialize the argument size
+        -: 1001:      _status = _logBuff.serialize(
+        -: 1002:          static_cast<U8>(sizeof(val1))
+        -: 1003:      );
+        -: 1004:      FW_ASSERT(
+        -: 1005:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1006:          static_cast<AssertArg>(_status)
+        -: 1007:      );
+        -: 1008:#endif
+        -: 1009:
+        8: 1010:      _status = _logBuff.serialize(val1);
+        8: 1011:      FW_ASSERT(
+        -: 1012:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1013:          static_cast<AssertArg>(_status)
+        -: 1014:      );
+        -: 1015:
+        -: 1016:#if FW_AMPCS_COMPATIBLE
+        -: 1017:      // Serialize the argument size
+        -: 1018:      _status = _logBuff.serialize(
+        -: 1019:          static_cast<U8>(sizeof(val2))
+        -: 1020:      );
+        -: 1021:      FW_ASSERT(
+        -: 1022:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1023:          static_cast<AssertArg>(_status)
+        -: 1024:      );
+        -: 1025:#endif
+        -: 1026:
+        8: 1027:      _status = _logBuff.serialize(val2);
+        8: 1028:      FW_ASSERT(
+        -: 1029:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1030:          static_cast<AssertArg>(_status)
+        -: 1031:      );
+        -: 1032:
+        -: 1033:#if FW_AMPCS_COMPATIBLE
+        -: 1034:      // Serialize the argument size
+        -: 1035:      _status = _logBuff.serialize(static_cast<U8>(sizeof(FwEnumStoreType)));
+        -: 1036:      FW_ASSERT(
+        -: 1037:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1038:          static_cast<AssertArg>(_status)
+        -: 1039:      );
+        -: 1040:#endif
+        -: 1041:
+        8: 1042:      _status = _logBuff.serialize(
+        -: 1043:          static_cast<FwEnumStoreType>(op)
+        -: 1044:      );
+        8: 1045:      FW_ASSERT(
+        -: 1046:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1047:          static_cast<AssertArg>(_status)
+        -: 1048:      );
+        -: 1049:
+        -: 1050:
+        8: 1051:      this->m_Log_OutputPort[0].invoke(
+        -: 1052:          _id,
+        -: 1053:          _logTime,Fw::LOG_ACTIVITY_LO,
+        -: 1054:          _logBuff
+        -: 1055:      );
+        -: 1056:
+        -: 1057:    }
+        -: 1058:
+        -: 1059:    // Emit the event on the text log port
+        -: 1060:#if FW_ENABLE_TEXT_LOGGING
+        8: 1061:    if (this->m_LogText_OutputPort[0].isConnected()) {
+        -: 1062:
+        -: 1063:#if FW_OBJECT_NAMES == 1
+        8: 1064:      const char* _formatString =
+        -: 1065:        "(%s) %s: Math Cmd Recvd: %f %d %f";
+        -: 1066:#else
+        -: 1067:      const char* _formatString =
+        -: 1068:        "%s: Math Cmd Recvd: %f %d %f";
+        -: 1069:#endif
+        -: 1070:
+        -: 1071:      char _textBuffer[FW_LOG_TEXT_BUFFER_SIZE];
+        -: 1072:
+        8: 1073:      (void) snprintf(
+        -: 1074:          _textBuffer,
+        -: 1075:          FW_LOG_TEXT_BUFFER_SIZE,
+        -: 1076:          _formatString,
+        -: 1077:#if FW_OBJECT_NAMES == 1
+        -: 1078:          this->m_objName,
+        -: 1079:#endif
+        -: 1080:          "MS_COMMAND_RECV "
+        -: 1081:        , val1
+        -: 1082:        , val2
+        -: 1083:        , op
+        -: 1084:      );
+        -: 1085:
+        -: 1086:      // Null terminate
+        8: 1087:      _textBuffer[FW_LOG_TEXT_BUFFER_SIZE-1] = 0;
+       16: 1088:      Fw::TextLogString _logString = _textBuffer;
+        8: 1089:      this->m_LogText_OutputPort[0].invoke(
+        -: 1090:          _id,
+        -: 1091:          _logTime,Fw::TEXT_LOG_ACTIVITY_LO,
+        -: 1092:          _logString
+        -: 1093:      );
+        -: 1094:
+        -: 1095:    }
+        -: 1096:#endif
+        -: 1097:
+        8: 1098:  }
+        -: 1099:  
+        -: 1100:
+        8: 1101:  void MathSenderComponentBase ::
+        -: 1102:    log_ACTIVITY_HI_MS_RESULT(
+        -: 1103:        F32 result
+        -: 1104:    )
+        -: 1105:  {
+        -: 1106:  
+        -: 1107:
+        -: 1108:    // Get the time
+       16: 1109:    Fw::Time _logTime;
+        8: 1110:    if (this->m_Time_OutputPort[0].isConnected()) {
+        8: 1111:       this->m_Time_OutputPort[0].invoke( _logTime);
+        -: 1112:    }
+        -: 1113:    
+        8: 1114:    FwEventIdType _id = static_cast<FwEventIdType>(0);
+        -: 1115:    
+        8: 1116:    _id = this->getIdBase() + EVENTID_MS_RESULT;
+        -: 1117:
+        -: 1118:    // Emit the event on the log port
+        8: 1119:    if (this->m_Log_OutputPort[0].isConnected()) {
+        -: 1120:
+       16: 1121:      Fw::LogBuffer _logBuff;
+        8: 1122:      Fw::SerializeStatus _status = Fw::FW_SERIALIZE_OK;
+        -: 1123:
+        -: 1124:#if FW_AMPCS_COMPATIBLE
+        -: 1125:      // Serialize the number of arguments
+        -: 1126:      _status = _logBuff.serialize(static_cast<U8>(1));
+        -: 1127:      FW_ASSERT(
+        -: 1128:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1129:          static_cast<AssertArg>(_status)
+        -: 1130:      );
+        -: 1131:#endif
+        -: 1132:
+        -: 1133:#if FW_AMPCS_COMPATIBLE
+        -: 1134:      // Serialize the argument size
+        -: 1135:      _status = _logBuff.serialize(
+        -: 1136:          static_cast<U8>(sizeof(result))
+        -: 1137:      );
+        -: 1138:      FW_ASSERT(
+        -: 1139:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1140:          static_cast<AssertArg>(_status)
+        -: 1141:      );
+        -: 1142:#endif
+        -: 1143:
+        8: 1144:      _status = _logBuff.serialize(result);
+        8: 1145:      FW_ASSERT(
+        -: 1146:          _status == Fw::FW_SERIALIZE_OK,
+        -: 1147:          static_cast<AssertArg>(_status)
+        -: 1148:      );
+        -: 1149:
+        -: 1150:
+        8: 1151:      this->m_Log_OutputPort[0].invoke(
+        -: 1152:          _id,
+        -: 1153:          _logTime,Fw::LOG_ACTIVITY_HI,
+        -: 1154:          _logBuff
+        -: 1155:      );
+        -: 1156:
+        -: 1157:    }
+        -: 1158:
+        -: 1159:    // Emit the event on the text log port
+        -: 1160:#if FW_ENABLE_TEXT_LOGGING
+        8: 1161:    if (this->m_LogText_OutputPort[0].isConnected()) {
+        -: 1162:
+        -: 1163:#if FW_OBJECT_NAMES == 1
+        8: 1164:      const char* _formatString =
+        -: 1165:        "(%s) %s: Math result is %f";
+        -: 1166:#else
+        -: 1167:      const char* _formatString =
+        -: 1168:        "%s: Math result is %f";
+        -: 1169:#endif
+        -: 1170:
+        -: 1171:      char _textBuffer[FW_LOG_TEXT_BUFFER_SIZE];
+        -: 1172:
+        8: 1173:      (void) snprintf(
+        -: 1174:          _textBuffer,
+        -: 1175:          FW_LOG_TEXT_BUFFER_SIZE,
+        -: 1176:          _formatString,
+        -: 1177:#if FW_OBJECT_NAMES == 1
+        -: 1178:          this->m_objName,
+        -: 1179:#endif
+        -: 1180:          "MS_RESULT "
+        -: 1181:        , result
+        -: 1182:      );
+        -: 1183:
+        -: 1184:      // Null terminate
+        8: 1185:      _textBuffer[FW_LOG_TEXT_BUFFER_SIZE-1] = 0;
+       16: 1186:      Fw::TextLogString _logString = _textBuffer;
+        8: 1187:      this->m_LogText_OutputPort[0].invoke(
+        -: 1188:          _id,
+        -: 1189:          _logTime,Fw::TEXT_LOG_ACTIVITY_HI,
+        -: 1190:          _logString
+        -: 1191:      );
+        -: 1192:
+        -: 1193:    }
+        -: 1194:#endif
+        -: 1195:
+        8: 1196:  }
+        -: 1197:  
+        -: 1198:
+        -: 1199:  // ----------------------------------------------------------------------
+        -: 1200:  // Calls for invocations received on typed input ports
+        -: 1201:  // ----------------------------------------------------------------------
+        -: 1202:
+        8: 1203:  void MathSenderComponentBase ::
+        -: 1204:    m_p_mathIn_in(
+        -: 1205:        Fw::PassiveComponentBase* callComp,
+        -: 1206:        NATIVE_INT_TYPE portNum,
+        -: 1207:        F32 result
+        -: 1208:    )
+        -: 1209:  {
+        8: 1210:    FW_ASSERT(callComp);
+        8: 1211:    MathSenderComponentBase* compPtr =
+        -: 1212:      (MathSenderComponentBase*) callComp;
+        8: 1213:    compPtr->mathIn_handlerBase(portNum, result);
+        8: 1214:  }
+        -: 1215:
+        -: 1216:  // ----------------------------------------------------------------------
+        -: 1217:  // Port handler base-class functions for typed input ports
+        -: 1218:  // ----------------------------------------------------------------------
+        -: 1219:
+        8: 1220:  void MathSenderComponentBase ::
+        -: 1221:    mathIn_handlerBase(
+        -: 1222:        NATIVE_INT_TYPE portNum,
+        -: 1223:        F32 result
+        -: 1224:    )
+        -: 1225:  {
+        -: 1226:
+        -: 1227:    // Make sure port number is valid
+        8: 1228:    FW_ASSERT(portNum < this->getNum_mathIn_InputPorts(),static_cast<AssertArg>(portNum));
+        -: 1229:
+        -: 1230:    // Call pre-message hook
+        8: 1231:    mathIn_preMsgHook(
+        -: 1232:        portNum,
+        -: 1233:        result
+        8: 1234:    );
+        -: 1235:
+       16: 1236:    ComponentIpcSerializableBuffer msg;
+        8: 1237:    Fw::SerializeStatus _status = Fw::FW_SERIALIZE_OK;
+        -: 1238:
+        8: 1239:    _status = msg.serialize(
+        -: 1240:        static_cast<NATIVE_INT_TYPE>(MATHIN_MATHRESULT)
+        -: 1241:    );
+        8: 1242:    FW_ASSERT (
+        -: 1243:        _status == Fw::FW_SERIALIZE_OK,
+        -: 1244:        static_cast<AssertArg>(_status)
+        -: 1245:    );
+        -: 1246:
+        8: 1247:    _status = msg.serialize(portNum);
+        8: 1248:    FW_ASSERT (
+        -: 1249:        _status == Fw::FW_SERIALIZE_OK,
+        -: 1250:        static_cast<AssertArg>(_status)
+        -: 1251:    );
+        -: 1252:
+        -: 1253:    // Serialize argument result
+        8: 1254:    _status = msg.serialize(result);
+        8: 1255:    FW_ASSERT(
+        -: 1256:        _status == Fw::FW_SERIALIZE_OK,
+        -: 1257:        static_cast<AssertArg>(_status)
+        -: 1258:    );
+        -: 1259:
+        -: 1260:      
+        -: 1261:    // send message
+        8: 1262:    Os::Queue::QueueBlocking _block = 
+        -: 1263:      Os::Queue::QUEUE_NONBLOCKING;
+        -: 1264:    Os::Queue::QueueStatus qStatus =
+        8: 1265:      this->m_queue.send(msg, 0,_block);
+        8: 1266:    FW_ASSERT(
+        -: 1267:        qStatus == Os::Queue::QUEUE_OK,
+        -: 1268:        static_cast<AssertArg>(qStatus)
+        -: 1269:    );      
+        -: 1270:      
+        8: 1271:  }
+        -: 1272:
+        -: 1273:  // ----------------------------------------------------------------------
+        -: 1274:  // Pre-message hooks for async input ports
+        -: 1275:  // ----------------------------------------------------------------------
+        -: 1276:
+        8: 1277:  void MathSenderComponentBase ::
+        -: 1278:    mathIn_preMsgHook(
+        -: 1279:        NATIVE_INT_TYPE portNum,
+        -: 1280:        F32 result
+        -: 1281:    )
+        -: 1282:  {
+        -: 1283:    // Default: no-op
+        8: 1284:  }
+        -: 1285:
+        -: 1286:  // ----------------------------------------------------------------------
+        -: 1287:  // Message dispatch method for active and queued components. Called
+        -: 1288:  // by active component thread or implementation code for queued components
+        -: 1289:  // ----------------------------------------------------------------------
+        -: 1290:
+       16: 1291:  Fw::QueuedComponentBase::MsgDispatchStatus MathSenderComponentBase ::
+        -: 1292:    doDispatch(void)
+        -: 1293:  {
+       32: 1294:    ComponentIpcSerializableBuffer msg;
+        -: 1295:    NATIVE_INT_TYPE priority;
+        -: 1296:
+       16: 1297:    Os::Queue::QueueStatus msgStatus = this->m_queue.receive(msg,priority,Os::Queue::QUEUE_BLOCKING);
+       16: 1298:    FW_ASSERT(
+        -: 1299:        msgStatus == Os::Queue::QUEUE_OK,
+        -: 1300:        static_cast<AssertArg>(msgStatus)
+        -: 1301:    );
+        -: 1302:
+        -: 1303:    // Reset to beginning of buffer
+       16: 1304:    msg.resetDeser();
+        -: 1305:
+        -: 1306:    NATIVE_INT_TYPE desMsg;
+       16: 1307:    Fw::SerializeStatus deserStatus = msg.deserialize(desMsg);
+       16: 1308:    FW_ASSERT(
+        -: 1309:        deserStatus == Fw::FW_SERIALIZE_OK,
+        -: 1310:        static_cast<AssertArg>(deserStatus)
+        -: 1311:    );
+        -: 1312:
+       16: 1313:    MsgTypeEnum msgType = static_cast<MsgTypeEnum>(desMsg);
+        -: 1314:
+       16: 1315:    if (msgType == MATHSENDER_COMPONENT_EXIT) {
+    #####: 1316:      return MSG_DISPATCH_EXIT;
+        -: 1317:    }
+        -: 1318:
+        -: 1319:    NATIVE_INT_TYPE portNum;
+       16: 1320:    deserStatus = msg.deserialize(portNum);
+       16: 1321:    FW_ASSERT(
+        -: 1322:        deserStatus == Fw::FW_SERIALIZE_OK,
+        -: 1323:        static_cast<AssertArg>(deserStatus)
+        -: 1324:    );
+        -: 1325:
+       16: 1326:    switch (msgType) {
+        -: 1327:
+        -: 1328:      // Handle async input port mathIn
+        8: 1329:      case MATHIN_MATHRESULT: {
+        -: 1330:
+        -: 1331:        // Deserialize argument result
+        -: 1332:        F32 result;
+        8: 1333:        deserStatus = msg.deserialize(result);
+        8: 1334:        FW_ASSERT(
+        -: 1335:            deserStatus == Fw::FW_SERIALIZE_OK,
+        -: 1336:            static_cast<AssertArg>(deserStatus)
+        -: 1337:        );
+        -: 1338:
+        -: 1339:        // Call handler function
+        8: 1340:        this->mathIn_handler(
+        -: 1341:            portNum,
+        -: 1342:            result
+        8: 1343:        );
+        -: 1344:
+        8: 1345:        break;
+        -: 1346:
+        -: 1347:      }
+        -: 1348:
+        -: 1349:      // Handle command MS_DO_MATH
+        8: 1350:      case CMD_MS_DO_MATH: {
+        -: 1351:        // Deserialize opcode
+        -: 1352:        FwOpcodeType opCode;
+        8: 1353:        deserStatus = msg.deserialize(opCode);
+        8: 1354:        FW_ASSERT (
+        -: 1355:            deserStatus == Fw::FW_SERIALIZE_OK,
+        -: 1356:            static_cast<AssertArg>(deserStatus)
+        -: 1357:        );
+        -: 1358:
+        -: 1359:        // Deserialize command sequence
+        -: 1360:        U32 cmdSeq;
+        8: 1361:        deserStatus = msg.deserialize(cmdSeq);
+        8: 1362:        FW_ASSERT (
+        -: 1363:            deserStatus == Fw::FW_SERIALIZE_OK,
+        -: 1364:            static_cast<AssertArg>(deserStatus)
+        -: 1365:        );
+        -: 1366:
+        -: 1367:        // Deserialize command argument buffer
+       16: 1368:        Fw::CmdArgBuffer args;
+        8: 1369:        deserStatus = msg.deserialize(args);
+        8: 1370:        FW_ASSERT (
+        -: 1371:            deserStatus == Fw::FW_SERIALIZE_OK,
+        -: 1372:            static_cast<AssertArg>(deserStatus)
+        -: 1373:        );
+        -: 1374:
+        -: 1375:        // Reset buffer
+        8: 1376:        args.resetDeser();
+        -: 1377:
+        -: 1378:        // Deserialize argument val1
+        -: 1379:        F32 val1;
+        8: 1380:        deserStatus = args.deserialize(val1);
+        8: 1381:        if (deserStatus != Fw::FW_SERIALIZE_OK) {
+    #####: 1382:          if (this->m_CmdStatus_OutputPort[0].isConnected()) {
+    #####: 1383:            this->cmdResponse_out(
+        -: 1384:                opCode,
+        -: 1385:                cmdSeq,
+        -: 1386:                Fw::COMMAND_FORMAT_ERROR
+        -: 1387:            );
+        -: 1388:          }
+        -: 1389:          // Don't crash the task if bad arguments were passed from the ground
+    #####: 1390:          break;
+        -: 1391:        }
+        -: 1392:
+        -: 1393:        // Deserialize argument val2
+        -: 1394:        F32 val2;
+        8: 1395:        deserStatus = args.deserialize(val2);
+        8: 1396:        if (deserStatus != Fw::FW_SERIALIZE_OK) {
+    #####: 1397:          if (this->m_CmdStatus_OutputPort[0].isConnected()) {
+    #####: 1398:            this->cmdResponse_out(
+        -: 1399:                opCode,
+        -: 1400:                cmdSeq,
+        -: 1401:                Fw::COMMAND_FORMAT_ERROR
+        -: 1402:            );
+        -: 1403:          }
+        -: 1404:          // Don't crash the task if bad arguments were passed from the ground
+    #####: 1405:          break;
+        -: 1406:        }
+        -: 1407:
+        -: 1408:        // Deserialize argument operation
+        -: 1409:        MathOp operation;
+        -: 1410:        FwEnumStoreType operationInt;
+        8: 1411:        deserStatus = args.deserialize(operationInt);
+        8: 1412:        operation = (MathOp)operationInt;
+        8: 1413:        if (deserStatus != Fw::FW_SERIALIZE_OK) {
+    #####: 1414:          if (this->m_CmdStatus_OutputPort[0].isConnected()) {
+    #####: 1415:            this->cmdResponse_out(
+        -: 1416:                opCode,
+        -: 1417:                cmdSeq,
+        -: 1418:                Fw::COMMAND_FORMAT_ERROR
+        -: 1419:            );
+        -: 1420:          }
+        -: 1421:          // Don't crash the task if bad arguments were passed from the ground
+    #####: 1422:          break;
+        -: 1423:        }
+        -: 1424:
+        -: 1425:        // Make sure there was no data left over.
+        -: 1426:        // That means the argument buffer size was incorrect.
+        -: 1427:#if FW_CMD_CHECK_RESIDUAL        
+        8: 1428:        if (args.getBuffLeft() != 0) {
+    #####: 1429:          if (this->m_CmdStatus_OutputPort[0].isConnected()) {
+    #####: 1430:            this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_FORMAT_ERROR);
+        -: 1431:          }
+        -: 1432:          // Don't crash the task if bad arguments were passed from the ground
+    #####: 1433:          break;
+        -: 1434:        }
+        -: 1435:#endif
+        -: 1436:        // Call handler function
+        8: 1437:        this->MS_DO_MATH_cmdHandler(
+        -: 1438:            opCode,
+        -: 1439:            cmdSeq,
+        -: 1440:            val1, val2, operation
+        8: 1441:        );
+        -: 1442:
+        8: 1443:        break;
+        -: 1444:
+        -: 1445:      }
+        -: 1446:
+    #####: 1447:      default:
+    #####: 1448:        return MSG_DISPATCH_ERROR;
+        -: 1449:
+        -: 1450:    }
+        -: 1451:
+       16: 1452:    return MSG_DISPATCH_OK;
+        -: 1453:
+        -: 1454:  }
+        -: 1455:
+        6: 1456:} // end namespace Ref

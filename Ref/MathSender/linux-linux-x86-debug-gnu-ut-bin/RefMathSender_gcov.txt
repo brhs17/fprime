@@ -1,0 +1,13 @@
+File '/home/bhs/fprime/Ref/MathSender/MathSenderComponentImpl.cpp'
+Lines executed:93.62% of 47
+Creating 'MathSenderComponentImpl.cpp.gcov'
+
+File '/usr/include/c++/7/iostream'
+Lines executed:100.00% of 1
+Creating 'iostream.gcov'
+
+File '/home/bhs/fprime/Ref/MathSender/MathSenderComponentAc.cpp'
+Lines executed:81.96% of 388
+Creating 'MathSenderComponentAc.cpp.gcov'
+
+Lines executed:83.26% of 436

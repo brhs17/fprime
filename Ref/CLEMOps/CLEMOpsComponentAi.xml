@@ -1,9 +1,9 @@
-<component name="CLEMOPs" king="active" namespace="Ref">
+<component name="CLEMOPs" kind="active" namespace="Ref">
 	<import_port_type>Ref/CLEPorts/DataRequestPortAi.xml</import_port_type>
 	<import_port_type>Ref/CLEPorts/DataResultPortAi.xml</import_port_type>
 	<ports>
 		<port name="dataRequest" data_type="Ref::DataRequest" kind="output"></port>
-		<port name = "dataResult" data_type="Ref::DataResult" king="async_input"></port>
+		<port name = "dataResult" data_type="Ref::DataResult" kind="async_input"></port>
 	</ports>
 	<commands>
 		<command kind="async" opcode="100" mnemonic = "Ops_Get_Data">

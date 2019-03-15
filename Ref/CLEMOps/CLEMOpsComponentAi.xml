@@ -1,0 +1,53 @@
+<component name="CLEMOPs" king="active" namespace="Ref">
+	<import_port_type>Ref/CLEPorts/DataRequestPortAi.xml</import_port_type>
+	<import_port_type>Ref/CLEPorts/DataResultPortAi.xml</import_port_type>
+	<ports>
+		<port name="dataRequest" data_type="Ref::DataRequest" kind="output"></port>
+		<port name = "dataResult" data_type="Ref::DataResult" king="async_input"></port>
+	</ports>
+	<commands>
+		<command kind="async" opcode="100" mnemonic = "Ops_Get_Data">
+			<args>
+			<arg name="data" type="ENUM">
+            			<enum name="options">
+                			<item name="GyroX"/>
+                			<item name="GyroY"/>
+                			<item name="GyroZ"/>
+                			<item name="RTCTime"/>
+            			</enum>
+        		</arg>
+			</args>
+		</command>
+	</commands>
+	<telemetry>
+		<channel id="102" name="Ops_Type" data_type="ENUM">
+			<enum name="dataTlm">
+				<item name="GyroX_TLM"/>
+                		<item name="GyroY_TLM"/>
+                		<item name="GyroZ_TLM"/>
+                		<item name="RTCTime_TLM"/>
+			</enum>
+		</channel>
+		<channel id="103" name="Ops_Result" data_type="F32"></channel>
+	</telemetry>
+	<events>
+		<event id="100" name="Ops_CMD_RECV" severity="ACTIVITY_LO" format_string="Ops Cmd Recvd: %f" >
+			<args>
+			<arg name = "dataEv" type="ENUM">
+				<enum name="MathOpEv">
+					<item name="GyroX_EV"/>
+                			<item name="GyroY_EV"/>
+                			<item name="GyroZ_EV"/>
+                			<item name="RTCTime_EV"/>
+				</enum>
+			</arg>
+			</args>
+		</event>
+		<event id="101" name="Ops_Result" severity = "ACTIVITY_HIGH" format_string="Ops Result is %f">
+			<args>
+			<arg name="result" type="F32">
+			</arg>
+			</args>
+		</event>
+	</events>
+</component>

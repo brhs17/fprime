@@ -1,1 +1,2 @@
-SUBDIRS = MOpAgg
+SRC = DataRequestPortAi.xml \
+	DataResultPortAi.xml

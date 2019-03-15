@@ -91,7 +91,9 @@ REF_MODULES := \
 	Ref/MathSender \
 	Ref/MathReceiver \
 	Ref/MathPorts \
-	Ref/MathTypes 
+	Ref/MathTypes \
+	Ref/CLEPorts
+
 	
 Ref_MODULES := \
 	\

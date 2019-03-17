@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CLEMOPs Component Dictionary</title>
+</head>
+<body>
+
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+}
+th {
+    text-align: left;
+}
+html {
+    font-family: Arial, sans-serif ;
+    font-size: 90% ;
+}
+</style>
+
+
+<h1><b>Commands</b></h1>
+
+
+
+<table>
+	<thead>
+		<tr style = "border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
+			<th rowspan = "2">Mnemonic</th>
+			<th rowspan = "2">ID</th>
+			<th rowspan = "2">Description</th>
+			<th rowspan = "1" colspan = "3">Arguments</th>
+		</tr>
+		<tr style = "border-right: 2px solid black; ">
+			<th>Argument</th>
+			<th>Type</th>
+			<th>Description</th>
+		<tr>
+	</thead>
+	<tbody>
+	
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">Ops_Get_Data</td>
+			<td rowspan="2">['100']</td>
+			<td rowspan="2"></td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>data</td>
+						<td>options</td>
+						<td></td>
+					</tr>
+		</tr>
+	</tbody>
+</table>   
+
+
+
+<h1><b>Telemetry</b></h1>
+<table>
+  <tr>
+     <th>Channel Name</th>
+     <th>ID</th>
+     <th>Type</th>
+     <th>Description</th>
+ </tr>
+
+ <tr>
+    <td>Ops_Type</td>
+    <td>['102']</td>
+    <td>dataTlm</td>
+    <td></td>
+ </tr>
+ <tr>
+    <td>Ops_Result</td>
+    <td>['103']</td>
+    <td>F32</td>
+    <td></td>
+ </tr>
+</table>
+
+<h1><b>Events</b></h1>
+
+
+
+
+<table>
+	<thead>
+		<tr style = "border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
+			<th rowspan = "2">Event Name</th>
+			<th rowspan = "2">ID</th>
+			<th rowspan = "2">Description</th>
+			<th rowspan = "1" colspan = "4">Arguments</th>
+		</tr>
+		<tr style = "border-right: 2px solid black; ">
+			<th>Argument</th>
+			<th>Type</th>
+			<th>Size</th>
+			<th>Description</th>
+		<tr>
+	</thead>
+	<tbody>
+	
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">Ops_CMD_RECV</td>
+			<td rowspan="2">['100']</td>
+			<td rowspan="2"></td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>dataEv</td>
+						<td>MathOpEv</td>
+						<td></td>
+						<td></td>
+					</tr>
+		</tr>
+		<tr style = "border: 2px solid black;">
+			<td rowspan="2">Ops_Result</td>
+			<td rowspan="2">['101']</td>
+			<td rowspan="2"></td>
+					<tr style = "border-right: 2px solid black;border-top: 2px solid black;border-bottom: 2px solid black;">					
+						<td>result</td>
+						<td>F32</td>
+						<td></td>
+						<td></td>
+					</tr>
+		</tr>
+	</tbody>
+</table> 
+
+
+
+</body>
+</html>

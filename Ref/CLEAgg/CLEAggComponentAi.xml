@@ -1,4 +1,4 @@
-<component name="CLEAgg" king="queued" namespace="Ref">
+<component name="CLEAgg" kind="queued" namespace="Ref">
 	<import_port_type>Ref/CLEPorts/DataRequestPortAi.xml</import_port_type>
 	<import_port_type>Ref/CLEPorts/DataResultPortAi.xml</import_port_type>
 	<import_port_type>Svc/Sched/SchedPortAi.xml</import_port_type>
@@ -6,7 +6,7 @@
 	<ports>
 		<port name="RequestIn" data_type="Ref::DataRequest" kind="async_input"></port>
 		<port name="ResponseOut" data_type="Ref::DataResult" kind="output"></port>
-		<port name="SchedIn" data_type="Sched" king="sync_input"></port>
+		<port name="SchedIn" data_type="Sched" kind="sync_input"></port>
 	</ports>
 	<commands>
 		<command kind="async"  opcode="100" mnemonic="CLEAgg_SET_GYROX">

@@ -1,4 +1,4 @@
-<component name="CLEMOPs" kind="active" namespace="Ref">
+<component name="CLEMOps" kind="active" namespace="Ref">
 	<import_port_type>Ref/CLEPorts/DataRequestPortAi.xml</import_port_type>
 	<import_port_type>Ref/CLEPorts/DataResultPortAi.xml</import_port_type>
 	<ports>

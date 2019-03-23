@@ -298,7 +298,7 @@ namespace Ref {
     //!
     void dataRequest_out(
         NATIVE_INT_TYPE portNum, /*!< The port number*/
-        options data /*!< Possible data types to be requested*/
+        DataRequestPortZ data /*!< Possible data types to be requested*/
     );
 
   PROTECTED:
@@ -465,8 +465,8 @@ namespace Ref {
       GyroY, /*  */
       GyroZ, /*  */
       RTCTime, /*  */
-      options_MAX
-    } options;
+      DataRequest_MAX
+    } DataRequest;
 
   PROTECTED:
 
@@ -489,7 +489,7 @@ namespace Ref {
     virtual void Ops_Get_Data_cmdHandler(
         FwOpcodeType opCode, /*!< The opcode*/
         U32 cmdSeq, /*!< The command sequence number*/
-        options data 
+        DataRequest data 
     ) = 0;
 
   PROTECTED:

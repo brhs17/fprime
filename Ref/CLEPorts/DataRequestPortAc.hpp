@@ -1,7 +1,7 @@
 /*
  * DataRequestPort.hpp
  *
- *  Created on: Thursday, 21 March 2019
+ *  Created on: Saturday, 23 March 2019
  *  Author:     bhs
  *
  */
@@ -26,8 +26,8 @@ namespace Ref {
         GyroY,
         GyroZ,
         RTCTime,
-        options_MAX
-    } options; //!< options enumeration argument
+        DataRequestPortZ_MAX
+    } DataRequestPortZ; //!< DataRequestPortZ enumeration argument
 
     /// Input DataRequest port description
     /// 
@@ -37,12 +37,12 @@ namespace Ref {
         enum {
             SERIALIZED_SIZE = sizeof(NATIVE_INT_TYPE) //!< serialized size of port arguments
         };
-        typedef void (*CompFuncPtr)(Fw::PassiveComponentBase* callComp, NATIVE_INT_TYPE portNum, options data); //!< port callback definition
+        typedef void (*CompFuncPtr)(Fw::PassiveComponentBase* callComp, NATIVE_INT_TYPE portNum, DataRequestPortZ data); //!< port callback definition
 
         InputDataRequestPort(void); //!< constructor
         void init(void); //!< initialization function
         void addCallComp(Fw::PassiveComponentBase* callComp, CompFuncPtr funcPtr); //!< call to register a component
-        void invoke(options data); //!< invoke port interface
+        void invoke(DataRequestPortZ data); //!< invoke port interface
     protected:
     private:
         CompFuncPtr m_func; //!< pointer to port callback function
@@ -58,7 +58,7 @@ namespace Ref {
         OutputDataRequestPort(void);
         void init(void);
         void addCallPort(InputDataRequestPort* callPort);
-        void invoke(options data);
+        void invoke(DataRequestPortZ data);
       protected:
       private:
         InputDataRequestPort* m_port;

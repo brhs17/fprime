@@ -4,7 +4,7 @@
     </comment>
     <args>
         <arg name="data" type="ENUM">
-            <enum name="options">
+            <enum name="DataRequestPortZ">
                 <item name="GyroX"/>
                 <item name="GyroY"/>
                 <item name="GyroZ"/>

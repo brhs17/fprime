@@ -7,7 +7,7 @@
 |Mnemonic|ID|Description|Arg Name|Arg Type|Comment
 |---|---|---|---|---|---|
 |Ops_Get_Data|100 (0x64)|| | |   
-| | | |data|options||                    
+| | | |data|DataRequest||                    
 
 ## Telemetry Channel List
 

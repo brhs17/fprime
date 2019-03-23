@@ -535,7 +535,7 @@ namespace Ref {
   void CLEMOpsComponentBase ::
     dataRequest_out(
         NATIVE_INT_TYPE portNum,
-        options data
+        DataRequestPortZ data
     )
   {
     FW_ASSERT(portNum < this->getNum_dataRequest_OutputPorts(),static_cast<AssertArg>(portNum));
@@ -1282,10 +1282,10 @@ namespace Ref {
         args.resetDeser();
 
         // Deserialize argument data
-        options data;
+        DataRequest data;
         FwEnumStoreType dataInt;
         deserStatus = args.deserialize(dataInt);
-        data = (options)dataInt;
+        data = (DataRequest)dataInt;
         if (deserStatus != Fw::FW_SERIALIZE_OK) {
           if (this->m_CmdStatus_OutputPort[0].isConnected()) {
             this->cmdResponse_out(

@@ -49,7 +49,7 @@ namespace Ref {
     }
 
     // call virtual logging function for component
-    void InputDataRequestPort::invoke(options data) {
+    void InputDataRequestPort::invoke(DataRequestPortZ data) {
 
 #if FW_PORT_TRACING == 1        
         this->trace();
@@ -71,7 +71,7 @@ namespace Ref {
         FwEnumStoreType data_val;
         _status = buffer.deserialize(data_val);
         FW_ASSERT(Fw::FW_SERIALIZE_OK == _status,static_cast<AssertArg>(_status));
-        options data = static_cast<options>(data_val);
+        DataRequestPortZ data = static_cast<DataRequestPortZ>(data_val);
 
         this->m_func(this->m_comp, this->m_portNum, data);
     }
@@ -96,7 +96,7 @@ void OutputDataRequestPort::addCallPort(InputDataRequestPort* callPort) {
 #endif
 }
 
-void OutputDataRequestPort::invoke(options data) {
+void OutputDataRequestPort::invoke(DataRequestPortZ data) {
 #if FW_PORT_TRACING == 1
     this->trace();
 #endif

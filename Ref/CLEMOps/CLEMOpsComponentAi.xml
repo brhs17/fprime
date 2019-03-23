@@ -9,7 +9,7 @@
 		<command kind="async" opcode="100" mnemonic = "Ops_Get_Data">
 			<args>
 			<arg name="data" type="ENUM">
-            			<enum name="options">
+            			<enum name="DataRequest">
                 			<item name="GyroX"/>
                 			<item name="GyroY"/>
                 			<item name="GyroZ"/>

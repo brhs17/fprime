@@ -1,0 +1,17 @@
+<interface name="DataRequest" namespace="Ref">
+    <comment>
+    Port to request a piece of data from Agg
+    </comment>
+    <args>
+        <arg name="data" type="ENUM">
+            <enum name="DataRequestPortZ">
+                <item name="GyroX"/>
+                <item name="GyroY"/>
+                <item name="GyroZ"/>
+                <item name="RTCTime"/>
+            </enum>
+            <comment>Possible data types to be requested</comment>
+        </arg>
+    </args>
+</interface>
+

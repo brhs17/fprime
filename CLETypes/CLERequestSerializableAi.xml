@@ -1,0 +1,13 @@
+<serializable namespace="Ref" name="DataRequest">
+	<members>
+		<member name="target" type="ENUM">
+			<enum name="type">
+				<item name="GyroXSer"/>
+				<item name="GyroYSer"/>
+				<item name="GyroZSer"/>
+				<item name ="RTCTimeSer"/>
+			</enum>
+		</member>
+		<member name = "result" type = "F32"/>
+	</members>
+</serializable>

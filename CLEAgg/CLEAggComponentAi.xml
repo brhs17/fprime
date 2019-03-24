@@ -1,0 +1,85 @@
+<component name="CLEAgg" kind="queued" namespace="Ref">
+	<import_port_type>Ref/CLEPorts/DataRequestPortAi.xml</import_port_type>
+	<import_port_type>Ref/CLEPorts/DataResultPortAi.xml</import_port_type>
+	<import_port_type>Svc/Sched/SchedPortAi.xml</import_port_type>
+	<import_serializable_type>Ref/CLETypes/CLERequestSerializableAi.xml</import_serializable_type>
+	<ports>
+		<port name="RequestIn" data_type="Ref::DataRequest" kind="async_input"></port>
+		<port name="ResponseOut" data_type="Ref::DataResult" kind="output"></port>
+		<port name="SchedIn" data_type="Sched" kind="sync_input"></port>
+	</ports>
+	<commands>
+		<command kind="async"  opcode="100" mnemonic="CLEAgg_SET_GYROX">
+		<args>
+			<arg name="val" type="F32"></arg>
+		</args>
+		</command>
+		<command kind="async"  opcode="101" mnemonic="CLEAgg_SET_GYROY">
+		<args>
+			<arg name="val" type="F32"></arg>
+		</args>
+		</command>
+		<command kind="async"  opcode="102" mnemonic="CLEAgg_SET_GYROZ">
+		<args>
+			<arg name="val" type="F32"></arg>
+		</args>
+		</command>
+		<command kind="async"  opcode="103" mnemonic="CLEAgg_SET_RTC_TIME">
+		<args>
+			<arg name="val" type="F32"></arg>
+		</args>
+		</command>
+		<command kind="async" opcode="104" mnemonic="CLEAgg_CLEAR_EVENT_THROTTLE"></command>
+	</commands>
+	<telemetry>
+		<channel id="100" name="CLEAgg_DATA_REQUEST" data_type="Ref::DataRequest"></channel>
+		<channel id="101" name="CLEAgg_GYROXS" data_type="U32"></channel>
+		<channel id="102" name="CLEAgg_GYROYS" data_type="U32"></channel>
+		<channel id="103" name="CLEAgg_GYROZS" data_type="U32"></channel>
+		<channel id="104" name="CLEAgg_RTC_TIMES" data_type="U32"></channel>
+		<channel id="105" name="CLEAgg_GYROX" data_type="F32"></channel>
+		<channel id="106" name="CLEAgg_GYROY" data_type="F32"></channel>
+		<channel id="107" name="CLEAgg_GYROZ" data_type="F32"></channel>
+		<channel id="108" name="CLEAgg_RTC_TIME" data_type="F32"></channel>
+	</telemetry>
+	<events>
+		<event id="100" name="CLEAgg_SET_GYROX" severity="ACTIVITY_HI" format_string="GyroX: %f" throttle="3">
+		<args>
+		<arg name="val" type="F32"></arg>
+		</args>
+		</event>
+
+		<event id="101" name="CLEAgg_SET_GYROY" severity="ACTIVITY_HI" format_string="GyroY: %f" throttle="3">
+		<args>
+		<arg name="val" type="F32"></arg>
+		</args>
+		</event>
+
+		<event id="102" name="CLEAgg_SET_GYROZ" severity="ACTIVITY_HI" format_string="GyroZ: %f" throttle="3">
+		<args>
+		<arg name="val" type="F32"></arg>
+		</args>
+		</event>
+
+		<event id="103" name="CLEAgg_SET_RTC_TIME" severity="ACTIVITY_HI" format_string="RTC Time: %f" throttle="3">
+		<args>
+		<arg name="val" type="F32"></arg>
+		</args>
+		</event>
+
+		<event id="104" name="CLEAgg_REQUEST_COMPLETED" severity="ACTIVITY_HI" format_string="Oparation Performed %s" >
+		<args>
+		<arg name="val" type="Ref::DataRequest"></arg>
+		</args>
+		</event>
+		
+		<event id="105" name="CLEAgg_THROTTLE_CLEARED" severity="ACTIVITY_HI" format_string="Event throttle cleared">
+		</event>
+	</events>
+	<parameters>
+	</parameters>
+</component>
+	
+
+		
+

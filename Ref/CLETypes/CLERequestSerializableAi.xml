@@ -2,10 +2,10 @@
 	<members>
 		<member name="target" type="ENUM">
 			<enum name="type">
-				<item name="GyroX"/>
-				<item name="GyroY"/>
-				<item name="GyroZ"/>
-				<item name ="RTCTime"/>
+				<item name="GyroXSer"/>
+				<item name="GyroYSer"/>
+				<item name="GyroZSer"/>
+				<item name ="RTCTimeSer"/>
 			</enum>
 		</member>
 		<member name = "result" type = "F32"/>

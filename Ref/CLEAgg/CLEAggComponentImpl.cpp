@@ -1,7 +1,7 @@
 // ====================================================================== 
-// \title  CLEMOpsImpl.cpp
+// \title  CLEAggImpl.cpp
 // \author bhs
-// \brief  cpp file for CLEMOps component implementation class
+// \brief  cpp file for CLEAgg component implementation class
 //
 // \copyright
 // Copyright 2009-2015, by the California Institute of Technology.
@@ -18,7 +18,7 @@
 // ====================================================================== 
 
 
-#include <Ref/CLEMOps/CLEMOpsComponentImpl.hpp>
+#include <Ref/CLEAgg/CLEAggComponentImpl.hpp>
 #include "Fw/Types/BasicTypes.hpp"
 
 namespace Ref {
@@ -27,30 +27,30 @@ namespace Ref {
   // Construction, initialization, and destruction 
   // ----------------------------------------------------------------------
 
-  CLEMOpsComponentImpl ::
+  CLEAggComponentImpl ::
 #if FW_OBJECT_NAMES == 1
-    CLEMOpsComponentImpl(
+    CLEAggComponentImpl(
         const char *const compName
     ) :
-      CLEMOpsComponentBase(compName)
+      CLEAggComponentBase(compName)
 #else
-    CLEMOpsImpl(void)
+    CLEAggImpl(void)
 #endif
   {
 
   }
 
-  void CLEMOpsComponentImpl ::
+  void CLEAggComponentImpl ::
     init(
         const NATIVE_INT_TYPE queueDepth,
         const NATIVE_INT_TYPE instance
     ) 
   {
-    CLEMOpsComponentBase::init(queueDepth, instance);
+    CLEAggComponentBase::init(queueDepth, instance);
   }
 
-  CLEMOpsComponentImpl ::
-    ~CLEMOpsComponentImpl(void)
+  CLEAggComponentImpl ::
+    ~CLEAggComponentImpl(void)
   {
 
   }
@@ -59,10 +59,19 @@ namespace Ref {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  void CLEMOpsComponentImpl ::
-    dataResult_handler(
+  void CLEAggComponentImpl ::
+    RequestIn_handler(
         const NATIVE_INT_TYPE portNum,
-        F32 result
+        DataRequestPortZ data
+    )
+  {
+    // TODO
+  }
+
+  void CLEAggComponentImpl ::
+    SchedIn_handler(
+        const NATIVE_INT_TYPE portNum,
+        NATIVE_UINT_TYPE context
     )
   {
     // TODO
@@ -72,11 +81,50 @@ namespace Ref {
   // Command handler implementations 
   // ----------------------------------------------------------------------
 
-  void CLEMOpsComponentImpl ::
-    Ops_Get_Data_cmdHandler(
+  void CLEAggComponentImpl ::
+    CLEAgg_SET_GYROX_cmdHandler(
         const FwOpcodeType opCode,
         const U32 cmdSeq,
-        DataRequest data
+        F32 val
+    )
+  {
+    // TODO
+  }
+
+  void CLEAggComponentImpl ::
+    CLEAgg_SET_GYROY_cmdHandler(
+        const FwOpcodeType opCode,
+        const U32 cmdSeq,
+        F32 val
+    )
+  {
+    // TODO
+  }
+
+  void CLEAggComponentImpl ::
+    CLEAgg_SET_GYROZ_cmdHandler(
+        const FwOpcodeType opCode,
+        const U32 cmdSeq,
+        F32 val
+    )
+  {
+    // TODO
+  }
+
+  void CLEAggComponentImpl ::
+    CLEAgg_SET_RTC_TIME_cmdHandler(
+        const FwOpcodeType opCode,
+        const U32 cmdSeq,
+        F32 val
+    )
+  {
+    // TODO
+  }
+
+  void CLEAggComponentImpl ::
+    CLEAgg_CLEAR_EVENT_THROTTLE_cmdHandler(
+        const FwOpcodeType opCode,
+        const U32 cmdSeq
     )
   {
     // TODO

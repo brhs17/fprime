@@ -37,7 +37,7 @@ class DataRequest(SerializableType):
     def __init__(self):
     
         m_list = [
-            ("target",EnumType("type",{"GyroX":0,"GyroY":1,"GyroZ":2,"RTCTime":3,}),"%s"),
+            ("target",EnumType("type",{"GyroXSer":0,"GyroYSer":1,"GyroZSer":2,"RTCTimeSer":3,}),"%s"),
             ("result",F32Type(),"%g"),
         ]
         

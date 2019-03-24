@@ -76,8 +76,6 @@
 		<event id="105" name="CLEAgg_THROTTLE_CLEARED" severity="ACTIVITY_HI" format_string="Event throttle cleared">
 		</event>
 	</events>
-	<parameters>
-	</parameters>
 </component>
 	
 

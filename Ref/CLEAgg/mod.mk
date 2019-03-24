@@ -1,1 +1,3 @@
-SRC = CLEAggComponentAi.xml
+SRC = CLEAggComponentAi.xml CLEAggComponentImpl.cpp
+
+HDR = CLEAggComponentImpl.hpp

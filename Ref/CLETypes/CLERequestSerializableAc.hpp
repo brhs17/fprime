@@ -22,10 +22,10 @@
 namespace Ref {
 
     typedef enum {
-        GyroX,
-        GyroY,
-        GyroZ,
-        RTCTime,
+        GyroXSer,
+        GyroYSer,
+        GyroZSer,
+        RTCTimeSer,
         type_MAX
     } type;
 
@@ -68,7 +68,7 @@ public:
 protected:
 
     enum {
-        TYPE_ID = 0xC2351F67 //!< type id
+        TYPE_ID = 0x26349023 //!< type id
     };
 
     type m_target; //<! target - 

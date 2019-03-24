@@ -67,9 +67,9 @@
 		</args>
 		</event>
 
-		<event id="104" name="CLEAgg_REQUEST_COMPLETED" severity="ACITIVITY_HI" format_string="Oparation Performed %s" >
+		<event id="104" name="CLEAgg_REQUEST_COMPLETED" severity="ACTIVITY_HI" format_string="Oparation Performed %s" >
 		<args>
-		<arg nam="val" type="Ref::DataRequest"></arg>
+		<arg name="val" type="Ref::DataRequest"></arg>
 		</args>
 		</event>
 		

@@ -720,7 +720,7 @@ namespace Ref {
     switch (opCode - idBase) {
 
       case OPCODE_OPS_GET_DATA: /*!<  */
-        compPtr->Ops_Get_Data_cmdHandlerBase(
+        compPtr->OPS_Get_Data_cmdHandlerBase(
             opCode,
             cmdSeq,
             args
@@ -755,7 +755,7 @@ namespace Ref {
   // ----------------------------------------------------------------------
 
   void CLEMOpsComponentBase ::
-    Ops_Get_Data_cmdHandlerBase(
+    OPS_Get_Data_cmdHandlerBase(
         FwOpcodeType opCode,
         U32 cmdSeq,
         Fw::CmdArgBuffer &args
@@ -763,7 +763,7 @@ namespace Ref {
   {
 
     // Call pre-message hook
-    this->Ops_Get_Data_preMsgHook(opCode,cmdSeq);
+    this->OPS_Get_Data_preMsgHook(opCode,cmdSeq);
 
     // Defer deserializing arguments to the message dispatcher
     // to avoid deserializing and reserializing just for IPC
@@ -816,7 +816,7 @@ namespace Ref {
   }
 
   void CLEMOpsComponentBase::
-    Ops_Get_Data_preMsgHook(
+    OPS_Get_Data_preMsgHook(
         FwOpcodeType opCode,
         U32 cmdSeq
     )
@@ -829,7 +829,7 @@ namespace Ref {
   // ----------------------------------------------------------------------
 
   void CLEMOpsComponentBase ::
-    tlmWrite_Ops_Type(dataTlm arg)
+    tlmWrite_OPS_TLM(dataTlm arg)
   {
 
     if (this->m_Tlm_OutputPort[0].isConnected()) {
@@ -846,7 +846,7 @@ namespace Ref {
       
       FwChanIdType _id;
       
-      _id = this->getIdBase() + CHANNELID_OPS_TYPE;
+      _id = this->getIdBase() + CHANNELID_OPS_TLM;
       
       this->m_Tlm_OutputPort[0].invoke(
           _id,
@@ -858,7 +858,7 @@ namespace Ref {
   }
 
   void CLEMOpsComponentBase ::
-    tlmWrite_Ops_Result(F32 arg)
+    tlmWrite_OPS_Result(F32 arg)
   {
 
     if (this->m_Tlm_OutputPort[0].isConnected()) {
@@ -907,7 +907,7 @@ namespace Ref {
   // ----------------------------------------------------------------------
 
   void CLEMOpsComponentBase ::
-    log_ACTIVITY_LO_Ops_CMD_RECV(
+    log_ACTIVITY_LO_OPS_CMD_RECV(
         MathOpEv dataEv
     )
   {
@@ -985,7 +985,7 @@ namespace Ref {
 #if FW_OBJECT_NAMES == 1
           this->m_objName,
 #endif
-          "Ops_CMD_RECV "
+          "OPS_CMD_RECV "
         , dataEv
       );
 
@@ -1005,7 +1005,7 @@ namespace Ref {
   
 
   void CLEMOpsComponentBase ::
-    log_ACTIVITY_HI_Ops_Result(
+    log_ACTIVITY_HI_OPS_Result(
         F32 result
     )
   {
@@ -1083,7 +1083,7 @@ namespace Ref {
 #if FW_OBJECT_NAMES == 1
           this->m_objName,
 #endif
-          "Ops_Result "
+          "OPS_Result "
         , result
       );
 
@@ -1252,7 +1252,7 @@ namespace Ref {
 
       }
 
-      // Handle command Ops_Get_Data
+      // Handle command OPS_Get_Data
       case CMD_OPS_GET_DATA: {
         // Deserialize opcode
         FwOpcodeType opCode;
@@ -1310,7 +1310,7 @@ namespace Ref {
         }
 #endif
         // Call handler function
-        this->Ops_Get_Data_cmdHandler(
+        this->OPS_Get_Data_cmdHandler(
             opCode,
             cmdSeq,
             data

@@ -6,7 +6,7 @@
 		<port name = "dataResult" data_type="Ref::DataResult" kind="async_input"></port>
 	</ports>
 	<commands>
-		<command kind="async" opcode="100" mnemonic = "Ops_Get_Data">
+		<command kind="async" opcode="100" mnemonic = "OPS_Get_Data">
 			<args>
 			<arg name="data" type="ENUM">
             			<enum name="DataRequest">
@@ -20,7 +20,7 @@
 		</command>
 	</commands>
 	<telemetry>
-		<channel id="102" name="Ops_Type" data_type="ENUM">
+		<channel id="102" name="OPS_TLM" data_type="ENUM">
 			<enum name="dataTlm">
 				<item name="GyroX_TLM"/>
                 		<item name="GyroY_TLM"/>
@@ -28,10 +28,10 @@
                 		<item name="RTCTime_TLM"/>
 			</enum>
 		</channel>
-		<channel id="103" name="Ops_Result" data_type="F32"></channel>
+		<channel id="103" name="OPS_Result" data_type="F32"></channel>
 	</telemetry>
 	<events>
-		<event id="100" name="Ops_CMD_RECV" severity="ACTIVITY_LO" format_string="Ops Cmd Recvd: %f" >
+		<event id="100" name="OPS_CMD_RECV" severity="ACTIVITY_LO" format_string="Ops Cmd Recvd: %f" >
 			<args>
 			<arg name = "dataEv" type="ENUM">
 				<enum name="MathOpEv">
@@ -43,7 +43,7 @@
 			</arg>
 			</args>
 		</event>
-		<event id="101" name="Ops_Result" severity = "ACTIVITY_HI" format_string="Ops Result is %f">
+		<event id="101" name="OPS_Result" severity = "ACTIVITY_HI" format_string="Ops Result is %f">
 			<args>
 			<arg name="result" type="F32">
 			</arg>

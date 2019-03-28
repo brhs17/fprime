@@ -1,7 +1,7 @@
 /*
  * DataRequestPort.hpp
  *
- *  Created on: Saturday, 23 March 2019
+ *  Created on: Wednesday, 27 March 2019
  *  Author:     bhs
  *
  */
@@ -22,10 +22,10 @@
 namespace Ref {
 
     typedef enum {
-        GyroX,
-        GyroY,
-        GyroZ,
-        RTCTime,
+        OPS_GyroX,
+        OPS_GyroY,
+        OPS_GyroZ,
+        OPS_RTCTime,
         DataRequestPortZ_MAX
     } DataRequestPortZ; //!< DataRequestPortZ enumeration argument
 

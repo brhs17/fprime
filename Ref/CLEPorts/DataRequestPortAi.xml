@@ -5,10 +5,10 @@
     <args>
         <arg name="data" type="ENUM">
             <enum name="DataRequestPortZ">
-                <item name="GyroX"/>
-                <item name="GyroY"/>
-                <item name="GyroZ"/>
-                <item name="RTCTime"/>
+                <item name="OPS_GyroX"/>
+                <item name="OPS_GyroY"/>
+                <item name="OPS_GyroZ"/>
+                <item name="OPS_RTCTime"/>
             </enum>
             <comment>Possible data types to be requested</comment>
         </arg>

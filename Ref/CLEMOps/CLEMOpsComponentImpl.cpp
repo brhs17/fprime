@@ -66,7 +66,7 @@ namespace Ref {
     )
   {
 	this->tlmWrite_OPS_Result(result);
-	this->log_ACTIVITY_HI_OPS_Result(result);	
+	this->log_ACTIVITY_HI_OPS_Result(result);
   }
 
   // ----------------------------------------------------------------------
@@ -74,13 +74,13 @@ namespace Ref {
   // ----------------------------------------------------------------------
 
   void CLEMOpsComponentImpl ::
-    Ops_Get_Data_cmdHandler(
+    OPS_Get_Data_cmdHandler(
         const FwOpcodeType opCode,
         const U32 cmdSeq,
         DataRequest data
     )
   {
-	dataTlm dTlm;
+    	dataTlm dTlm;
 	MathOpEv dEv;
 	DataRequestPortZ dPort;
     	switch(data){
@@ -117,7 +117,6 @@ namespace Ref {
 	this->log_ACTIVITY_LO_OPS_CMD_RECV(dEv);
 	this->dataRequest_out(0,dPort);
 	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
-
   }
 
 } // end namespace Ref

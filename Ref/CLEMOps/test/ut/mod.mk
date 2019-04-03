@@ -5,6 +5,7 @@ TEST_SRC = main.cpp \
 	
 TEST_MODS = Ref/CLEMOps \
 	Ref/CLEAgg \
+	Ref/CLEPorts \
 	Fw/Cmd \
 	Fw/Comp \
 	Fw/Port \

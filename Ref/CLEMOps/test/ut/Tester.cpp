@@ -61,7 +61,7 @@ testGyroXCommand(void)
 	ASSERT_FROM_PORT_HISTORY_SIZE(1);
 	ASSERT_from_dataRequest_SIZE(1);
 	ASSERT_from_dataRequest(0,OPS_GyroX);
-	ASSERT_TLM_SIZE(3);
+	ASSERT_TLM_SIZE(1);
 	ASSERT_TLM_OPS_TLM_SIZE(1);
 	ASSERT_TLM_OPS_TLM(0,CLEMOpsComponentBase::GyroX_TLM);
 	ASSERT_EVENTS_SIZE(1);
@@ -85,18 +85,84 @@ void Tester ::
 testGyroYCommand(void)
 {
 	this->sendCmd_OPS_Get_Data(0,10,CLEMOpsComponentBase::GyroY);
+	this->component.doDispatch();
+	ASSERT_FROM_PORT_HISTORY_SIZE(1);
+	ASSERT_from_dataRequest_SIZE(1);
+	ASSERT_from_dataRequest(0,OPS_GyroY);
+	ASSERT_TLM_SIZE(1);
+	ASSERT_TLM_OPS_TLM_SIZE(1);
+	ASSERT_TLM_OPS_TLM(0, CLEMOpsComponentBase::GyroY_TLM);
+	ASSERT_EVENTS_SIZE(1);
+	ASSERT_EVENTS_OPS_CMD_RECV_SIZE(1);
+	ASSERT_EVENTS_OPS_CMD_RECV(0,CLEMOpsComponentBase::GyroY_EV);	
+	ASSERT_CMD_RESPONSE_SIZE(1);
+	ASSERT_CMD_RESPONSE(0,CLEMOpsComponentBase::OPCODE_OPS_GET_DATA,10,Fw::COMMAND_OK);
+
+	this->clearHistory();
+	this->invoke_to_dataResult(0,10.0);
+	this->component.doDispatch();
+	ASSERT_TLM_SIZE(1);
+	ASSERT_TLM_OPS_Result_SIZE(1);
+	ASSERT_TLM_OPS_Result(0,10.0);
+	ASSERT_EVENTS_SIZE(1);
+	ASSERT_EVENTS_OPS_Result_SIZE(1);
+	ASSERT_EVENTS_OPS_Result(0,10.0);
 }
 
 void Tester::
 testGyroZCommand(void)
 {
 	this->sendCmd_OPS_Get_Data(0,10,CLEMOpsComponentBase::GyroZ);
+	this->component.doDispatch();
+	ASSERT_FROM_PORT_HISTORY_SIZE(1);
+	ASSERT_from_dataRequest_SIZE(1);
+	ASSERT_from_dataRequest(0,OPS_GyroZ);
+	ASSERT_TLM_SIZE(1);
+	ASSERT_TLM_OPS_TLM_SIZE(1);
+	ASSERT_TLM_OPS_TLM(0, CLEMOpsComponentBase::GyroZ_TLM);
+	ASSERT_EVENTS_SIZE(1);
+	ASSERT_EVENTS_OPS_CMD_RECV_SIZE(1);
+	ASSERT_EVENTS_OPS_CMD_RECV(0,CLEMOpsComponentBase::GyroZ_EV);	
+	ASSERT_CMD_RESPONSE_SIZE(1);
+	ASSERT_CMD_RESPONSE(0,CLEMOpsComponentBase::OPCODE_OPS_GET_DATA,10,Fw::COMMAND_OK);
+
+	this->clearHistory();
+	this->invoke_to_dataResult(0,10.0);
+	this->component.doDispatch();
+	ASSERT_TLM_SIZE(1);
+	ASSERT_TLM_OPS_Result_SIZE(1);
+	ASSERT_TLM_OPS_Result(0,10.0);
+	ASSERT_EVENTS_SIZE(1);
+	ASSERT_EVENTS_OPS_Result_SIZE(1);
+	ASSERT_EVENTS_OPS_Result(0,10.0);
 }
 
 void Tester::
 testRTCTimeCommand(void)
 {
 	this->sendCmd_OPS_Get_Data(0,10,CLEMOpsComponentBase::RTCTime);
+	this->component.doDispatch();
+	ASSERT_FROM_PORT_HISTORY_SIZE(1);
+	ASSERT_from_dataRequest_SIZE(1);
+	ASSERT_from_dataRequest(0,OPS_RTCTime);
+	ASSERT_TLM_SIZE(1);
+	ASSERT_TLM_OPS_TLM_SIZE(1);
+	ASSERT_TLM_OPS_TLM(0, CLEMOpsComponentBase::RTCTime_TLM);
+	ASSERT_EVENTS_SIZE(1);
+	ASSERT_EVENTS_OPS_CMD_RECV_SIZE(1);
+	ASSERT_EVENTS_OPS_CMD_RECV(0,CLEMOpsComponentBase::RTCTime_EV);	
+	ASSERT_CMD_RESPONSE_SIZE(1);
+	ASSERT_CMD_RESPONSE(0,CLEMOpsComponentBase::OPCODE_OPS_GET_DATA,10,Fw::COMMAND_OK);
+
+	this->clearHistory();
+	this->invoke_to_dataResult(0,10.0);
+	this->component.doDispatch();
+	ASSERT_TLM_SIZE(1);
+	ASSERT_TLM_OPS_Result_SIZE(1);
+	ASSERT_TLM_OPS_Result(0,10.0);
+	ASSERT_EVENTS_SIZE(1);
+	ASSERT_EVENTS_OPS_Result_SIZE(1);
+	ASSERT_EVENTS_OPS_Result(0,10.0);
 }
 
 

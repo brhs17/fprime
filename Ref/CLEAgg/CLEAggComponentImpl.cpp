@@ -35,9 +35,17 @@ namespace Ref {
       CLEAggComponentBase(compName)
 #else
     CLEAggImpl(void)
-#endif
+#endif  
+	,ops_gyroX(0.0) 
+	,ops_gyroXs(0)
+	,ops_gyroY(0.0) 
+	,ops_gyroYs(0)
+	,ops_gyroZ(0.0) 
+	,ops_gyroZs(0)
+	,ops_RTCTime(0.0) 
+	,ops_RTCTimes(0)
   {
-
+	
   }
 
   void CLEAggComponentImpl ::
@@ -65,7 +73,35 @@ namespace Ref {
         DataRequestPortZ data
     )
   {
-    // TODO
+	Ref::DataRequest dr;
+	F32 res = 0.0;
+	switch(data){
+		case OPS_GyroX:
+			res = ops_gyroX;
+			dr.settarget(GyroXSer);
+			break;
+		case OPS_GyroY:
+			res = ops_gyroY;
+			dr.settarget(GyroYSer);
+			break;
+		case OPS_GyroZ:
+			res = ops_gyroZ;
+			dr.settarget(GyroZSer);
+			break;
+		case OPS_RTCTime:
+			res = ops_RTCTime;
+			dr.settarget(RTCTimeSer);
+			break;
+		default:
+			FW_ASSERT(0,data);
+			break;
+	}
+	dr.setresult(res);
+	this->log_ACTIVITY_HI_CLEAgg_REQUEST_COMPLETED(dr);
+	this->tlmWrite_CLEAgg_DATA_REQUEST(dr);
+	this->ResponseOut_out(0,res);
+	
+	
   }
 
   void CLEAggComponentImpl ::
@@ -74,7 +110,10 @@ namespace Ref {
         NATIVE_UINT_TYPE context
     )
   {
-    // TODO
+	QueuedComponentBase::MsgDispatchStatus stat = QueuedComponentBase::MSG_DISPATCH_OK;
+	while(stat != MSG_DISPATCH_EMPTY) {
+		stat = this->doDispatch();
+	}
   }
 
   // ----------------------------------------------------------------------
@@ -88,7 +127,11 @@ namespace Ref {
         F32 val
     )
   {
-    // TODO
+	this->ops_gyroX = val;
+	this->log_ACTIVITY_HI_CLEAgg_SET_GYROX(val);
+	this->tlmWrite_CLEAgg_GYROX(val);
+	this->tlmWrite_CLEAgg_GYROXS(++this->ops_gyroXs);
+	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
   }
 
   void CLEAggComponentImpl ::
@@ -98,7 +141,11 @@ namespace Ref {
         F32 val
     )
   {
-    // TODO
+	this->ops_gyroY = val;
+	this->log_ACTIVITY_HI_CLEAgg_SET_GYROY(val);
+	this->tlmWrite_CLEAgg_GYROY(val);
+	this->tlmWrite_CLEAgg_GYROYS(++this->ops_gyroYs);
+	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
   }
 
   void CLEAggComponentImpl ::
@@ -108,7 +155,11 @@ namespace Ref {
         F32 val
     )
   {
-    // TODO
+	this->ops_gyroZ = val;
+	this->log_ACTIVITY_HI_CLEAgg_SET_GYROZ(val);
+	this->tlmWrite_CLEAgg_GYROZ(val);
+	this->tlmWrite_CLEAgg_GYROZS(++this->ops_gyroZs);
+	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
   }
 
   void CLEAggComponentImpl ::
@@ -118,7 +169,11 @@ namespace Ref {
         F32 val
     )
   {
-    // TODO
+	this->ops_RTCTime = val;
+	this->log_ACTIVITY_HI_CLEAgg_SET_RTC_TIME(val);
+	this->tlmWrite_CLEAgg_RTC_TIME(val);
+	this->tlmWrite_CLEAgg_RTC_TIMES(++this->ops_RTCTimes);
+	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
   }
 
   void CLEAggComponentImpl ::
@@ -127,7 +182,12 @@ namespace Ref {
         const U32 cmdSeq
     )
   {
-    // TODO
+	this->log_ACTIVITY_HI_CLEAgg_SET_GYROX_ThrottleClear();
+	this->log_ACTIVITY_HI_CLEAgg_SET_GYROY_ThrottleClear();
+	this->log_ACTIVITY_HI_CLEAgg_SET_GYROZ_ThrottleClear();
+	this->log_ACTIVITY_HI_CLEAgg_SET_RTC_TIME_ThrottleClear();
+	this->log_ACTIVITY_HI_CLEAgg_THROTTLE_CLEARED();
+	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
   }
 
 } // end namespace Ref

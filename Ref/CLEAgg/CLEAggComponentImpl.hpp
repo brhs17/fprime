@@ -119,6 +119,16 @@ namespace Ref {
           const FwOpcodeType opCode, /*!< The opcode*/
           const U32 cmdSeq /*!< The command sequence number*/
       );
+	F32 ops_gyroX;
+	F32 ops_gyroY;
+	F32 ops_gyroZ;
+	F32 ops_RTCTime;
+
+	U32 ops_gyroXs;
+	U32 ops_gyroYs;
+	U32 ops_gyroZs;
+	F32 ops_RTCTimes;
+	
 
 
     };

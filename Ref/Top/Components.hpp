@@ -32,6 +32,9 @@ void exitTasks(void);
 #include <Ref/MathSender/MathSenderComponentImpl.hpp>
 #include <Ref/MathReceiver/MathReceiverComponentImpl.hpp>
 
+#include <Ref/CLEMOps/CLEMOpsComponentImpl.hpp>
+#include <Ref/CLEAgg/CLEAggComponentImpl.hpp>
+
 extern Svc::RateGroupDriverImpl rateGroupDriverComp;
 extern Svc::ActiveRateGroupImpl rateGroup1Comp, rateGroup2Comp, rateGroup3Comp;
 extern Svc::CmdSequencerComponentImpl cmdSeq;
@@ -59,4 +62,6 @@ extern Ref::PingReceiverComponentImpl pingRcvr;
 
 extern Ref::MathSenderComponentImpl mathSender;
 extern Ref::MathReceiverComponentImpl mathReceiver;
+extern Ref::CLEMOpsComponentImpl CLEMOps;
+extern Ref::CLEAggComponentImpl CLEAgg;
 #endif

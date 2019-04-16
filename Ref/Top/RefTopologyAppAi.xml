@@ -30,8 +30,13 @@
 	<import_component_type>Svc/FileDownlink/FileDownlinkComponentAi.xml</import_component_type>
 	<import_component_type>Svc/PassiveTextLogger/PassiveTextLoggerComponentAi.xml</import_component_type>
 
-    <import_component_type>Ref/MathSender/MathSenderComponentAi.xml</import_component_type>
-    <import_component_type>Ref/MathReceiver/MathReceiverComponentAi.xml</import_component_type>
+	<import_component_type>Ref/MathSender/MathSenderComponentAi.xml</import_component_type>
+	<import_component_type>Ref/MathReceiver/MathReceiverComponentAi.xml</import_component_type>
+
+	<import_component_type>Ref/CLEMOps/CLEMOpsComponentAi.xml</import_component_type>
+	<import_component_type>Ref/CLEAgg/CLEAggComponentAi.xml</import_component_type>
+
+	
 
    <instance namespace="Svc" name="fatalHandler" type="FatalHandler" base_id="1"  base_id_window="20" />
 
@@ -92,6 +97,8 @@
    <instance namespace="Ref" name="mathSender" type="MathSender" base_id="600"  base_id_window="20" />
    <instance namespace="Ref" name="mathReceiver" type="MathReceiver" base_id="700"  base_id_window="20" />
 
+	<instance namespace="Ref" name="CLEMOps" type="CLEMOps" base_id="800" base_id_window="20" />
+	<instance namespace="Ref" name="CLEAgg" type="CLEAgg" base_id="900" base_id_window="20" />
 
 <connection name = "Connection1">
 	 <source component = "recvBuffComp" port = "Time" type = "Time" num = "0"/>
@@ -815,7 +822,7 @@
 </connection>
 
 
-<!-- Command Regsitration ports -->
+<!-- Command Regsitration ports - registration port must match dispatch port for each component-->
 
    <connection name = "MathSenderReg">
         <source component = "mathSender" port = "CmdReg" type = "CmdReg" num = "0"/>
@@ -826,7 +833,17 @@
         <target component = "cmdDisp" port = "compCmdReg" type = "CmdReg" num = "21"/>
    </connection>
 
-<!-- Command Dispatch Ports -->
+	<connection name="CLEMOpsReg">
+		<source component = "CLEMOps" port= "CmdReg" type = "CmdReg" num="0"/>
+		<target component = "cmdDisp" port="compCmdReg" type="CmdReg" num = "22"/>
+	</connection>
+
+	<connection name="CLEAggReg">
+		<source component = "CLEAgg" port="CmdReg" type="CmdReg" num="0"/>
+		<target component="cmdDisp" port="compCmdReg" type="CmdReg" num="23"/>	
+	</connection>
+
+<!-- Command Dispatch Ports - dispatch port must match registration port for each component-->
 
    <connection name = "MathSenderDisp">
         <source component = "cmdDisp" port = "compCmdSend" type = "Cmd" num = "20"/>
@@ -836,8 +853,18 @@
         <source component = "cmdDisp" port = "compCmdSend" type = "Cmd" num = "21"/>
         <target component = "mathReceiver" port = "CmdDisp" type = "Cmd" num = "0"/>
    </connection>
+	
+	<connection name = "CLEMOpsDisp">
+		<source component = "cmdDisp" port="compCmdSend" type="Cmd" num = "22"/>
+		<target component = "CLEMOps" port = "CmdDisp" type = "Cmd" num = "0"/>
+	</connection>
 
-<!-- Command reply Ports -->
+	<connection name = "CLEAggDisp">
+		<source component = "cmdDisp" port="compCmdSend" type="Cmd" num="23"/>
+		<target component = "CLEAgg" port = "CmdDisp" type = "Cmd" num="0"/>
+	</connection>
+
+<!-- Command reply Ports - go to same ports as dispatcher (usually 0)-->
 
    <connection name = "MathSenderReply">
       <source component = "mathSender" port = "CmdStatus" type = "CmdResponse" num = "0"/>
@@ -847,6 +874,16 @@
       <source component = "mathReceiver" port = "CmdStatus" type = "CmdResponse" num = "0"/>
       <target component = "cmdDisp" port = "compCmdStat" type = "CmdResponse" num = "0"/>
    </connection>
+
+	<connection name = "CLEMOpsReply">
+		<source component = "CLEMOps" port = "CmdStatus" type = "CmdResponse" num="0"/>
+		<target component = "cmdDisp" port = "compCmdStat" type = "CmdResponse" num="0"/>
+	</connection>
+
+	<connection name = "CLEAggReply">
+		<source component="CLEAgg" port="CmdStatus" type="CmdResponse" num = "0"/>
+		<target component = "cmdDisp" port="compCmdStat" type="CmdResponse" num="0"/>
+	</connection>
 
 <!-- Event logger binary connections -->
 
@@ -859,6 +896,16 @@
         <target component = "eventLogger" port = "LogRecv" type = "Log" num = "0"/>
    </connection>
 
+	<connection name = "CLEMOpsLog">
+		<source component="CLEMOps" port = "Log" type = "Log" num="0"/>
+		<target component = "eventLogger" port="LogRecv" type = "Log" num = "0"/>
+	</connection>
+
+	<connection name = "CLEAggLog">
+		<source component = "CLEAgg" port = "Log" type="Log" num="0"/>
+		<target component = "eventLogger" port="LogRecv" type = "Log" num = "0"/>
+	</connection>
+
 <!-- Event logger text connections -->
 
    <connection name = "MathSenderTextLog">
@@ -870,6 +917,15 @@
         <target component = "textLogger" port = "TextLogger" type = "LogText" num = "0"/>
    </connection>
 
+	<connection name="CLEMOpsTextLog">
+		<source component = "CLEMOps" port = "LogText" type = "LogText" num = "0"/>
+		<target component = "textLogger" port = "TextLogger" type = "LogText" num="0"/>
+	</connection>
+	<connection name = "CLEAggTextLog">
+		<source component = "CLEAgg" port = "LogText" type = "LogText" num = "0"/>
+		<target component = "textLogger" port = "TextLogger" type = "LogText" num = "0"/>
+	</connection>
+
 <!-- Telementary Connections -->
 
    <connection name = "MathSenderTextTlm">
@@ -880,6 +936,15 @@
        <source component = "mathReceiver" port = "Tlm" type = "Tlm" num = "0"/>
         <target component = "chanTlm" port = "TlmRecv" type = "Tlm" num = "0"/>
    </connection>
+
+	<connection name = "CLEMOpsTextTlm">
+		<source component = "CLEMOps" port = "Tlm" type="Tlm" num="0"/>
+		<target component = "chanTlm" port = "TlmRecv" type = "Tlm" num = "0"/>
+	</connection>
+	<connection name = "CLEAggTextTlm">
+		<source component = "CLEAgg" port = "Tlm" type = "Tlm" num="0"/>
+		<target component = "chanTlm" port = "TlmRecv" type = "Tlm" num="0"/>
+	</connection>
 
 <!-- Parameter Connections -->
 
@@ -903,12 +968,26 @@
         <target component = "linuxTime" port = "timeGetPort" type = "Time" num = "0"/>
    </connection>
 
+	<connection name = "CLEMOpsTime">
+		<source component = "CLEMOps" port = "Time" type = "Time" num = "0"/>
+		<target component = "linuxTime" port = "timeGetPort" type = "time" num = "0"/>
+	</connection>
+	<connection name = "CLEAggTime">
+		<source component = "CLEAgg" port = "Time" type = "Time" num = "0"/>
+		<target component = "linuxTime" port = "timeGetPort" type = "Time" num = "0"/>
+	</connection>
+
 <!-- Scheduler Connection -->
 
     <connection name = "MathReceiverRG">
          <source component = "rateGroup1Comp" port = "RateGroupMemberOut" type = "Sched" num = "3"/>
          <target component = "mathReceiver" port = "SchedIn" type = "Sched" num = "0"/>
     </connection>
+
+	<connection name = "CLEAggRG">
+		<source component = "rateGroup1Comp" port = "RateGroupMemberOut" type = "Sched" num = "3"/>
+		<target component = "CLEAgg" port = "SchedIn" type = "Sched" num = "0"/>
+	</connection>
 
 <!-- Math Connection -->
 
@@ -920,6 +999,15 @@
        <source component = "mathReceiver" port = "mathOut" type = "Ref::MathResult" num = "0"/>
         <target component = "mathSender" port = "mathIn" type = "Ref::MathResult" num = "0"/>
    </connection>
+
+	<connection name = "DataRequestConnection">
+		<source component = "CLEMOps" port = "dataRequest" type = "Ref::DataRequest" num="0"/>
+		<target component = "CLEAgg" port = "RequestIn" type = "Ref::DataRequest" num = "0"/>
+	</connection>
+	<connection name = "DataResultConnection">
+		<source component = "CLEAgg" port = "ResponseOut" type = "Ref::DataResult" num = "0"/>
+		<target component = "CLEMOps" port = "dataResult" type = "Ref::DataResult" num = "0"/>
+	</connection>
 
 
 </assembly>

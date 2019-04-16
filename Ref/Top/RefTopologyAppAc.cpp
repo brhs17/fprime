@@ -33,6 +33,8 @@ void setRefIds(void){
 	cmdSeq.setIdBase(541);
 	mathSender.setIdBase(600);
 	mathReceiver.setIdBase(700);
+	CLEMOps.setIdBase(800);
+	CLEAgg.setIdBase(900);
 }
 
 
@@ -60,6 +62,8 @@ void constructRefArchitecture(void) {
     rateGroup1Comp.set_Log_OutputPort(0, eventLogger.get_LogRecv_InputPort(0));
     //None
     rateGroup1Comp.set_RateGroupMemberOut_OutputPort(3, mathReceiver.get_SchedIn_InputPort(0));
+    //None
+    rateGroup1Comp.set_RateGroupMemberOut_OutputPort(3, CLEAgg.get_SchedIn_InputPort(0));
     //None
     pingRcvr.set_LogText_OutputPort(0, textLogger.get_TextLogger_InputPort(0));
     //None
@@ -160,6 +164,10 @@ void constructRefArchitecture(void) {
     cmdDisp.set_compCmdSend_OutputPort(20, mathSender.get_CmdDisp_InputPort(0));
     //None
     cmdDisp.set_compCmdSend_OutputPort(21, mathReceiver.get_CmdDisp_InputPort(0));
+    //None
+    cmdDisp.set_compCmdSend_OutputPort(22, CLEMOps.get_CmdDisp_InputPort(0));
+    //None
+    cmdDisp.set_compCmdSend_OutputPort(23, CLEAgg.get_CmdDisp_InputPort(0));
     //None
     prmDb.set_pingOut_OutputPort(0, health.get_PingReturn_InputPort(6));
     //None
@@ -440,6 +448,34 @@ void constructRefArchitecture(void) {
     mathReceiver.set_Time_OutputPort(0, linuxTime.get_timeGetPort_InputPort(0));
     //None
     mathReceiver.set_mathOut_OutputPort(0, mathSender.get_mathIn_InputPort(0));
+    //None
+    CLEMOps.set_CmdReg_OutputPort(0, cmdDisp.get_compCmdReg_InputPort(22));
+    //None
+    CLEMOps.set_CmdStatus_OutputPort(0, cmdDisp.get_compCmdStat_InputPort(0));
+    //None
+    CLEMOps.set_Log_OutputPort(0, eventLogger.get_LogRecv_InputPort(0));
+    //None
+    CLEMOps.set_LogText_OutputPort(0, textLogger.get_TextLogger_InputPort(0));
+    //None
+    CLEMOps.set_Tlm_OutputPort(0, chanTlm.get_TlmRecv_InputPort(0));
+    //None
+    CLEMOps.set_Time_OutputPort(0, linuxTime.get_timeGetPort_InputPort(0));
+    //None
+    CLEMOps.set_dataRequest_OutputPort(0, CLEAgg.get_RequestIn_InputPort(0));
+    //None
+    CLEAgg.set_CmdReg_OutputPort(0, cmdDisp.get_compCmdReg_InputPort(23));
+    //None
+    CLEAgg.set_CmdStatus_OutputPort(0, cmdDisp.get_compCmdStat_InputPort(0));
+    //None
+    CLEAgg.set_Log_OutputPort(0, eventLogger.get_LogRecv_InputPort(0));
+    //None
+    CLEAgg.set_LogText_OutputPort(0, textLogger.get_TextLogger_InputPort(0));
+    //None
+    CLEAgg.set_Tlm_OutputPort(0, chanTlm.get_TlmRecv_InputPort(0));
+    //None
+    CLEAgg.set_Time_OutputPort(0, linuxTime.get_timeGetPort_InputPort(0));
+    //None
+    CLEAgg.set_ResponseOut_OutputPort(0, CLEMOps.get_dataResult_InputPort(0));
 
 }
 

@@ -195,6 +195,18 @@ Ref::MathReceiverComponentImpl mathReceiver
 #endif
 ;
 
+Ref::CLEMOpsComponentImpl CLEMOps
+#if FW_OBJECT_NAMES == 1
+	("CLEMOps")
+#endif
+;
+
+Ref::CLEAggComponentImpl CLEAgg
+#if FW_OBJECT_NAMES ==1
+	("CLEAgg")
+#endif
+;
+
 #if FW_OBJECT_REGISTRATION == 1
 
 void dumparch(void) {
@@ -267,6 +279,8 @@ void constructApp(int port_number, char* hostname) {
 
 	mathSender.init(10,0);
 	mathReceiver.init(10,0);
+	CLEMOps.init(10,0);
+	CLEAgg.init(10,0);
     // Connect rate groups to rate group driver
     constructRefArchitecture();
 
@@ -288,6 +302,8 @@ void constructApp(int port_number, char* hostname) {
 
 	mathSender.regCommands();
         mathReceiver.regCommands();
+	CLEMOps.regCommands();
+	CLEAgg.regCommands();
 
 	
 
@@ -339,6 +355,8 @@ void constructApp(int port_number, char* hostname) {
     pingRcvr.start(0, 100, 10*1024);
 
     mathSender.start(0,100,10*1024);
+
+	CLEMOps.start(0,100,10*1024);
 
     // Initialize socket server
     sockGndIf.startSocketTask(100, port_number, hostname);
@@ -392,6 +410,8 @@ void exitTasks(void) {
     cmdSeq.exit();
 
     mathSender.exit();
+
+    CLEMOps.exit();
 }
 
 void print_usage() {

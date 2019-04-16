@@ -12,6 +12,7 @@
 #include <Svc/CmdDispatcher/CommandDispatcherComponentAc.hpp>
 #include <Svc/TlmChan/TlmChanComponentAc.hpp>
 #include <Ref/PingReceiver/PingReceiverComponentAc.hpp>
+#include <Ref/CLEMOps/CLEMOpsComponentAc.hpp>
 #include <Ref/MathSender/MathSenderComponentAc.hpp>
 #include <Svc/FileUplink/FileUplinkComponentAc.hpp>
 #include <Ref/SignalGen/SignalGenComponentAc.hpp>
@@ -21,6 +22,7 @@
 #include <Svc/Time/TimeComponentAc.hpp>
 #include <Svc/PrmDb/PrmDbComponentAc.hpp>
 #include <Drv/BlockDriver/BlockDriverComponentAc.hpp>
+#include <Ref/CLEAgg/CLEAggComponentAc.hpp>
 #include <Svc/FatalHandler/FatalHandlerComponentAc.hpp>
 #include <Svc/RateGroupDriver/RateGroupDriverComponentAc.hpp>
 #include <Ref/RecvBuffApp/RecvBuffComponentAc.hpp>
@@ -62,6 +64,8 @@ extern Svc::FileDownlinkImpl fileDownlink("fileDownlink");
 extern Svc::PassiveTextLoggerImpl textLogger("textLogger");
 extern Ref::MathSenderImpl mathSender("mathSender");
 extern Ref::MathReceiverImpl mathReceiver("mathReceiver");
+extern Ref::CLEMOpsImpl CLEMOps("CLEMOps");
+extern Ref::CLEAggImpl CLEAgg("CLEAgg");
 
 
 

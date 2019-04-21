@@ -484,9 +484,9 @@ namespace Ref {
     // Command handlers to implement
     // ----------------------------------------------------------------------
 
-    //! Handler for command Ops_Get_Data
+    //! Handler for command OPS_Get_Data
     /*  */
-    virtual void Ops_Get_Data_cmdHandler(
+    virtual void OPS_Get_Data_cmdHandler(
         FwOpcodeType opCode, /*!< The opcode*/
         U32 cmdSeq, /*!< The command sequence number*/
         DataRequest data 
@@ -502,9 +502,9 @@ namespace Ref {
     // override them to provide specific pre-command behavior.
     // ----------------------------------------------------------------------
 
-    //! Pre-message hook for command Ops_Get_Data
+    //! Pre-message hook for command OPS_Get_Data
     //!
-    virtual void Ops_Get_Data_preMsgHook(
+    virtual void OPS_Get_Data_preMsgHook(
         FwOpcodeType opCode, /*!< The opcode*/
         U32 cmdSeq /*!< The command sequence number*/
     );
@@ -516,9 +516,9 @@ namespace Ref {
     // Call these functions directly to bypass the command input port.
     // ----------------------------------------------------------------------
 
-    //! Base-class handler function for command Ops_Get_Data
+    //! Base-class handler function for command OPS_Get_Data
     //! 
-    void Ops_Get_Data_cmdHandlerBase( 
+    void OPS_Get_Data_cmdHandlerBase( 
         FwOpcodeType opCode, /*!< The opcode*/
         U32 cmdSeq, /*!< The command sequence number*/
         Fw::CmdArgBuffer &args /*!< The command argument buffer*/
@@ -569,16 +569,16 @@ namespace Ref {
     // Event logging functions
     // ----------------------------------------------------------------------
 
-    //! Log event Ops_CMD_RECV
+    //! Log event OPS_CMD_RECV
     //!
-    void log_ACTIVITY_LO_Ops_CMD_RECV(
+    void log_ACTIVITY_LO_OPS_CMD_RECV(
         MathOpEv dataEv 
     );
     
 
-    //! Log event Ops_Result
+    //! Log event OPS_Result
     //!
-    void log_ACTIVITY_HI_Ops_Result(
+    void log_ACTIVITY_HI_OPS_Result(
         F32 result 
     );
     
@@ -590,8 +590,8 @@ namespace Ref {
     // ----------------------------------------------------------------------
 
     enum {
-      CHANNELID_OPS_TYPE = 102, //!< Channel ID for Ops_Type
-      CHANNELID_OPS_RESULT = 103, //!< Channel ID for Ops_Result
+      CHANNELID_OPS_TLM = 102, //!< Channel ID for OPS_TLM
+      CHANNELID_OPS_RESULT = 103, //!< Channel ID for OPS_Result
     };
 
   PROTECTED:
@@ -614,15 +614,15 @@ namespace Ref {
     // Telemetry write functions
     // ----------------------------------------------------------------------
 
-    //! Write telemetry channel Ops_Type
+    //! Write telemetry channel OPS_TLM
     //!
-    void tlmWrite_Ops_Type(
+    void tlmWrite_OPS_TLM(
         dataTlm arg /*!< The telemetry value*/
     );
 
-    //! Write telemetry channel Ops_Result
+    //! Write telemetry channel OPS_Result
     //!
-    void tlmWrite_Ops_Result(
+    void tlmWrite_OPS_Result(
         F32 arg /*!< The telemetry value*/
     );
 

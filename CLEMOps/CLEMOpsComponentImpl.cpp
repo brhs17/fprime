@@ -65,7 +65,8 @@ namespace Ref {
         F32 result
     )
   {
-    // TODO
+	this->tlmWrite_OPS_Result(result);
+	this->log_ACTIVITY_HI_OPS_Result(result);
   }
 
   // ----------------------------------------------------------------------
@@ -73,13 +74,49 @@ namespace Ref {
   // ----------------------------------------------------------------------
 
   void CLEMOpsComponentImpl ::
-    Ops_Get_Data_cmdHandler(
+    OPS_Get_Data_cmdHandler(
         const FwOpcodeType opCode,
         const U32 cmdSeq,
-        options data
+        DataRequest data
     )
   {
-    // TODO
+    	dataTlm dTlm;
+	MathOpEv dEv;
+	DataRequestPortZ dPort;
+    	switch(data){
+		case GyroX:
+		dTlm=GyroX_TLM;
+		dEv=GyroX_EV;
+		dPort=OPS_GyroX;
+		break;
+		
+		case GyroY:
+		dTlm=GyroY_TLM;
+		dEv=GyroY_EV;
+		dPort=OPS_GyroY;
+		break;
+		
+		case GyroZ:
+		dTlm=GyroZ_TLM;
+		dEv=GyroZ_EV;
+		dPort=OPS_GyroZ;
+		break;
+
+		case RTCTime:
+		dTlm=RTCTime_TLM;
+		dEv=RTCTime_EV;
+		dPort=OPS_RTCTime;
+		break;
+		
+		default:
+		FW_ASSERT(0,data);
+		break;
+	}
+	
+	this->tlmWrite_OPS_TLM(dTlm);
+	this->log_ACTIVITY_LO_OPS_CMD_RECV(dEv);
+	this->dataRequest_out(0,dPort);
+	this->cmdResponse_out(opCode,cmdSeq,Fw::COMMAND_OK);
   }
 
 } // end namespace Ref

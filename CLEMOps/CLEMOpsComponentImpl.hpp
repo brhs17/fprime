@@ -74,12 +74,12 @@ namespace Ref {
       // Command handler implementations 
       // ----------------------------------------------------------------------
 
-      //! Implementation for Ops_Get_Data command handler
+      //! Implementation for OPS_Get_Data command handler
       //! 
-      void Ops_Get_Data_cmdHandler(
+      void OPS_Get_Data_cmdHandler(
           const FwOpcodeType opCode, /*!< The opcode*/
           const U32 cmdSeq, /*!< The command sequence number*/
-          options data 
+          DataRequest data 
       );
 
 
